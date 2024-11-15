@@ -3,7 +3,6 @@
 use App\Http\Controllers\autenticadorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes

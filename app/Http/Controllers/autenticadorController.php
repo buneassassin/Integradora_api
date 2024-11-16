@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\Activacion;
 use App\Models\Usuario;
+use App\Models\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +18,12 @@ class autenticadorController extends Controller
         $validator = Validator::make($request->all(), [
             'usuario_nom' => 'required',
             'email' => 'required|email|unique:usuario',
-            'password' => 'required'
+            'password' => 'required',
+            'nombres' => 'required',
+            'apellidoPaterno' => 'required',
+            'apellidoMaterno' => 'required',
+            'telefono' => 'required'
+
         ]);
 
         if ($validator->fails()) {
@@ -25,13 +31,19 @@ class autenticadorController extends Controller
                 'message' => $validator->errors()
             ], 400);
         }
+        $persona = new Persona();
 
+        $persona->nombres = $request->nombres;
+        $persona->a_p = $request->apellidoPaterno;
+        $persona->a_m = $request->apellidoMaterno;
+        $persona->telefono = $request->telefono;
+        $persona->save();
         $user = new Usuario();
 
         $user->usuario_nom = $request->usuario_nom;
+        $user->id_persona = $persona->id;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->rol = 'guest';
         $user->save();
 
 
@@ -79,7 +91,25 @@ class autenticadorController extends Controller
         ], 200);
     }
 
+    public function logout(Request $request)
+    {
+   
+        
+        $request->user()->currentAccessToken()->delete();   
 
+
+        return response()->json(['message' => 'Sesión cerrada correctamente.'], 200);
+    }
+    public function me(Request $request)
+    {
+        // saamos el usario autenticado
+        $user = $request->user();
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'user' => $user
+        ], 200);
+    }
 
     public function activate($userId)
     {
@@ -97,7 +127,8 @@ class autenticadorController extends Controller
             ], 200);
         }
 
-        $user->rol = 'usuario';
+        $user->is_active = true;
+        $user->rol = 'user';
 
         $user->save();
 

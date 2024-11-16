@@ -62,3 +62,11 @@ class Activacion extends Mailable
         return [];
     }
 }
+
+
+// posible instalacion de paquete?
+
+/* Este paquete proporciona una forma fácil de manejar correos electrónicos en Laravel.
+
+composer require spatie/laravel-mail-coach
+*/

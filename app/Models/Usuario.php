@@ -7,42 +7,90 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Traits\HasRoles;
+
+
+// paquete para guardar imagenes ejemplo:
+/*
+ $image = Image::make('path/to/image.jpg');
+$image->resize(300, 200);
+$image->save('path/to/image.jpg');
+ */
+use Intervention\Image\ImageManagerStatic as Image;
 
 class Usuario extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     protected $table = 'usuario';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
+        'id_persona',
         'usuario_nom',
         'email',
-        'password',
+        'email_verified_at',
         'foto_perfil',
-        'rol'
+        'password',
+        'is_active',
+        'remember_token',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
+    public function persona()
+    {
+        return $this->hasOne(Persona::class, 'id_usuario');
+    }
+
+    public function tinacos()
+    {
+        return $this->hasMany(Tinaco::class, 'id_usuario');
+    }
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 }
+
+
+// cosa a agregar al register de autenticadorController:
+/*
+public function register(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'usuario_nom' => 'required',
+        'email' => 'required|email|unique:usuario',
+        'password' => 'required|min:6'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => $validator->errors()
+        ], 400);
+    }
+
+    // Crear el usuario
+    $user = Usuario::create([
+        'usuario_nom' => $request->usuario_nom,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'role_id' => 1, // Asignar el role_id del rol 'guest' (por ejemplo, el ID 1)
+    ]);
+
+    // Asignar el rol con Spatie (opcional)
+    $user->assignRole('guest'); // Asumiendo que el rol 'guest' está definido
+
+    $url = URL::temporarySignedRoute('activate', now()->addMinutes(5), ['user' => $user->id]);
+
+    Mail::to($user->email)->send(new Activacion($user, $url));
+
+    return response()->json([
+        'message' => 'Usuario creado exitosamente, revisa tu correo para activarlo.'
+    ], 201);
+}
+
+*/

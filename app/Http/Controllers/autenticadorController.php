@@ -40,9 +40,45 @@ class autenticadorController extends Controller
         Mail::to($user->email)->send(new Activacion($user, $url));
 
         return response()->json([
-            'message' => 'Se ha creado el usuario, fijate en el email crack'
+            'success' => true,
+            'message' => 'Usuario registrado exitosamente'
         ], 200);
     }
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        $user = Usuario::where('email', $request->email)->first();
+        // vereficar si el usuario existe o el password es correcto
+        if (!$user || !password_verify($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ])
+                ->setStatusCode(401);
+        }
+
+        /*    if (!$user->is_active) {
+            return response()->json([
+                'message' => 'Account not activated'
+            ], 401);
+        }*/
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'token' => $user->createToken($user->email)->plainTextToken
+        ], 200);
+    }
+
 
 
     public function activate($userId)
@@ -61,7 +97,7 @@ class autenticadorController extends Controller
             ], 200);
         }
 
-        $user->rol = 'usuario';      
+        $user->rol = 'usuario';
 
         $user->save();
 

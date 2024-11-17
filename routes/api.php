@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\autenticadorController;
+use App\Http\Controllers\ImagenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,8 @@ Route::post('v1/logout', [autenticadorController::class, 'logout'])->middleware(
 Route::get('v1/me', [autenticadorController::class, 'me'])->middleware('auth:sanctum');
 
 Route::post('v1/reset-password', [autenticadorController::class, 'recuperarPassword']);
-Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password')
-;
-Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword'])
-;
+Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password');
+Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword']);
+
+Route::post('v1/imagen', [ImagenController::class, 'store'])->middleware('auth:sanctum');
+Route::get('v1/imagen', [ImagenController::class, 'ver'])->middleware('auth:sanctum');

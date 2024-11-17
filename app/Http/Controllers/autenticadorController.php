@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\Activacion;
+use App\Mail\ResetPassword;
 use App\Models\Usuario;
 use App\Models\Persona;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
@@ -90,7 +93,6 @@ class autenticadorController extends Controller
             'message' => 'Login successful',
             'token' => $user->createToken($user->email)->plainTextToken
         ], 200);
-        
     }
     public function update(Request $request)
     {
@@ -102,15 +104,15 @@ class autenticadorController extends Controller
             'apellidoMaterno' => 'sometimes|string',
             'telefono' => 'sometimes|string'
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
             ], 400);
         }
-    
+
         $user = $request->user();
-    
+
         // Actualizar solo los campos que estén presentes en la solicitud
         if ($request->filled('usuario_nom')) {
             $user->usuario_nom = $request->usuario_nom;
@@ -118,11 +120,11 @@ class autenticadorController extends Controller
         if ($request->filled('email')) {
             $user->email = $request->email;
         }
-       
+
         $user->save();
-    
+
         $persona = Persona::find($user->id_persona);
-    
+
         if ($request->filled('nombres')) {
             $persona->nombres = $request->nombres;
         }
@@ -136,7 +138,7 @@ class autenticadorController extends Controller
             $persona->telefono = $request->telefono;
         }
         $persona->save();
-    
+
         return response()->json(['message' => 'Usuario actualizado correctamente.'], 200);
     }
     public function updatePassword(Request $request)
@@ -157,20 +159,76 @@ class autenticadorController extends Controller
                 'message' => 'Contraseñas no coinciden'
             ], 400);
         }
-    
+
         $user = $request->user();
         $user->password = bcrypt($request->password);
         $user->save();
-    
+
         return response()->json(['message' => 'Password updated successfully.'], 200);
     }
-    
+    public function recuperarPassword(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+        $user = Usuario::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'message' => 'Email not found'
+            ], 404);
+        }
+        $url = URL::temporarySignedRoute('reset-password', now()->addMinutes(5), ['user' => $user->id]);
+        $activarCuenta = new ResetPassword($user, $url);
+
+        Mail::to($user->email)->send($activarCuenta);
+
+        return response()->json([
+            'message' => 'Correo enviado correctamente, revisa tu correo',
+            'email' => $user->email,
+            'url' => $url
+        ], 200);
+    }
+    public function showResetForm($userId)
+    {
+        // Verifica si el enlace es válido
+        $user = Usuario::findOrFail($userId);
+        return view('auth.reset_password_form', ['user' => $user]);
+    }
+
+    public function resetPassword(Request $request, $userId)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator);
+        }
+
+        $user = Usuario::findOrFail($userId);
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Contraseña cambiada correctamente!'
+        ])->setStatusCode(200);
+
+    }
+
+
 
 
     public function logout(Request $request)
     {
-   
-        $request->user()->currentAccessToken()->delete();   
+
+        $request->user()->currentAccessToken()->delete();
 
 
         return response()->json(['message' => 'Sesión cerrada correctamente.'], 200);
@@ -179,7 +237,7 @@ class autenticadorController extends Controller
     {
         // Obtener el usuario autenticado con los datos de `persona`
         $user = $request->user()->load('persona');
-    
+
         return response()->json([
             'success' => true,
             'message' => 'User info retrieved successfully',
@@ -197,8 +255,8 @@ class autenticadorController extends Controller
             ]
         ], 200);
     }
-    
-    
+
+
 
     public function activate($userId)
     {

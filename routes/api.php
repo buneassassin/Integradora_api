@@ -3,6 +3,7 @@
 use App\Http\Controllers\autenticadorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,3 +26,9 @@ Route::post('v1/update', [autenticadorController::class, 'update'])->middleware(
 Route::post('v1/updatePassword', [autenticadorController::class, 'updatePassword'])->middleware('auth:sanctum');
 Route::post('v1/logout', [autenticadorController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('v1/me', [autenticadorController::class, 'me'])->middleware('auth:sanctum');
+
+Route::post('v1/reset-password', [autenticadorController::class, 'recuperarPassword']);
+Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password')
+;
+Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword'])
+;

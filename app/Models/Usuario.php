@@ -38,7 +38,8 @@ class Usuario extends Authenticatable
 
     public function persona()
     {
-        return $this->hasOne(Persona::class, 'id_usuario');
+        return $this->belongsTo(Persona::class, 'id_persona');
+        // 'id_persona' es la clave foránea en `usuario`
     }
 
     public function tinacos()

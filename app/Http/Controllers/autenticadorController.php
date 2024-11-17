@@ -43,6 +43,7 @@ class autenticadorController extends Controller
         $user->usuario_nom = $request->usuario_nom;
         $user->id_persona = $persona->id;
         $user->email = $request->email;
+        $user->foto_perfil = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
         $user->password = bcrypt($request->password);
         $user->save();
 
@@ -89,12 +90,86 @@ class autenticadorController extends Controller
             'message' => 'Login successful',
             'token' => $user->createToken($user->email)->plainTextToken
         ], 200);
+        
     }
+    public function update(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'usuario_nom' => 'sometimes|string',
+            'email' => 'sometimes|email|unique:usuario,email,' . $request->user()->id,
+            'nombres' => 'sometimes|string',
+            'apellidoPaterno' => 'sometimes|string',
+            'apellidoMaterno' => 'sometimes|string',
+            'telefono' => 'sometimes|string'
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+    
+        $user = $request->user();
+    
+        // Actualizar solo los campos que estén presentes en la solicitud
+        if ($request->filled('usuario_nom')) {
+            $user->usuario_nom = $request->usuario_nom;
+        }
+        if ($request->filled('email')) {
+            $user->email = $request->email;
+        }
+       
+        $user->save();
+    
+        $persona = Persona::find($user->id_persona);
+    
+        if ($request->filled('nombres')) {
+            $persona->nombres = $request->nombres;
+        }
+        if ($request->filled('apellidoPaterno')) {
+            $persona->a_p = $request->apellidoPaterno;
+        }
+        if ($request->filled('apellidoMaterno')) {
+            $persona->a_m = $request->apellidoMaterno;
+        }
+        if ($request->filled('telefono')) {
+            $persona->telefono = $request->telefono;
+        }
+        $persona->save();
+    
+        return response()->json(['message' => 'Usuario actualizado correctamente.'], 200);
+    }
+    public function updatePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required|string|min:8'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+        //validar si los passwords son iguales
+        if ($request->password != $request->password_confirmation) {
+            return response()->json([
+                'message' => 'Contraseñas no coinciden'
+            ], 400);
+        }
+    
+        $user = $request->user();
+        $user->password = bcrypt($request->password);
+        $user->save();
+    
+        return response()->json(['message' => 'Password updated successfully.'], 200);
+    }
+    
+
 
     public function logout(Request $request)
     {
    
-        
         $request->user()->currentAccessToken()->delete();   
 
 
@@ -102,14 +177,28 @@ class autenticadorController extends Controller
     }
     public function me(Request $request)
     {
-        // saamos el usario autenticado
-        $user = $request->user();
+        // Obtener el usuario autenticado con los datos de `persona`
+        $user = $request->user()->load('persona');
+    
         return response()->json([
             'success' => true,
-            'message' => 'Login successful',
-            'user' => $user
+            'message' => 'User info retrieved successfully',
+            'user' => [
+                'id' => $user->id,
+                'email' => $user->email,
+                'usuario_nom' => $user->usuario_nom,
+                'foto_perfil' => $user->foto_perfil,
+                'persona' => [
+                    'nombres' => $user->persona->nombres,
+                    'a_p' => $user->persona->a_p,
+                    'a_m' => $user->persona->a_m,
+                    'telefono' => $user->persona->telefono
+                ]
+            ]
         ], 200);
     }
+    
+    
 
     public function activate($userId)
     {

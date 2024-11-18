@@ -37,10 +37,18 @@ class TinacoController extends Controller
     public function listartinacos(){
         $id_usuario = auth()->user()->id;
         $tinacos = Tinaco::where('id_usuario', $id_usuario)->get();
+        //veremos si hay tinacos
+        if ($tinacos->isEmpty()) {
+            return response()->json(['message' => 'No hay tinacos.'], 404);
+        }
         return response()->json($tinacos, 200);
     }
     public function eliminartinaco($id){
         $tinaco = Tinaco::find($id);
+        //veremos si el tinaco existe
+        if (!$tinaco) {
+            return response()->json(['message' => 'El tinaco no existe.'], 404);
+        }
         $tinaco->delete();
         return response()->json(['message' => 'Tinaco eliminado correctamente.'], 200);
     }
@@ -54,12 +62,24 @@ class TinacoController extends Controller
             ], 400);
         }
         $tinaco = Tinaco::find($id);
+        //veremos si el tinaco existe
+        if (!$tinaco) {
+            return response()->json(['message' => 'El tinaco no existe.'], 404);
+        }
+        $tinacos = Tinaco::where('name', $request->name)->first();
+        if ($tinacos) {
+            return response()->json(['message' => 'El tinaco ya existe con ese nombre.'], 400);
+        }
         $tinaco->name = $request->name;
         $tinaco->save();
         return response()->json(['message' => 'Tinaco actualizado correctamente.'], 200);
     }
     public function gettinaco($id){
         $tinaco = Tinaco::find($id);
+        //veremos si el tinaco existe
+        if (!$tinaco) {
+            return response()->json(['message' => 'El tinaco no existe.'], 404);
+        }
         return response()->json($tinaco, 200);
     }
 

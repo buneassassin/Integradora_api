@@ -38,7 +38,7 @@ Route::get('v1/imagen', [ImagenController::class, 'ver'])->middleware('auth:sanc
 
 // Link para el tinaco
 Route::post('v1/tinaco', [TinacoController::class, 'agregartinaco'])->middleware('auth:sanctum');
-Route::get('v1/tinaco', [TinacoController::class, 'verTinacos'])->middleware('auth:sanctum');
+Route::get('v1/tinaco', [TinacoController::class, 'listartinacos'])->middleware('auth:sanctum');
 Route::delete('v1/tinaco/{id}', [TinacoController::class, 'eliminartinaco'])->middleware('auth:sanctum');
-Route::get('v1/tinaco/{id}', [TinacoController::class, 'verTinaco'])->middleware('auth:sanctum');
-Route::post('v1/tinaco/{id}', [TinacoController::class, 'actualizartinaco'])->middleware('auth:sanctum');
+Route::get('v1/tinaco/{id}', [TinacoController::class, 'gettinaco'])->middleware('auth:sanctum');
+Route::put('v1/tinaco/{id}', [TinacoController::class, 'actualizartinaco'])->middleware('auth:sanctum');

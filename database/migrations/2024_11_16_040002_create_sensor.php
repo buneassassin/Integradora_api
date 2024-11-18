@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_tinaco')->constrained('tinaco')->onDelete('cascade');
             $table->string('nombre');
-            $table->string('modelo');
-            $table->string('unidad_medida');
+            $table->string('modelo')->nullable();
+            $table->string('unidad_medida')->nullable();
             $table->timestamps();
 
             

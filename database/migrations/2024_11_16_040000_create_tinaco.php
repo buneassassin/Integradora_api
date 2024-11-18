@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_usuario')->constrained('usuario')->onDelete('cascade');
             $table->string('name');
-            $table->integer('nivel_del_agua');
+            $table->integer('nivel_del_agua')->nullable();
             $table->timestamps();
 
             

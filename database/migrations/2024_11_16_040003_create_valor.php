@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_sensor')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('id_rango')->constrained('rango')->onDelete('cascade');
-            $table->decimal('value', 10, 2);
+            $table->decimal('value', 10, 2)->nullable();
             $table->timestamps();
 
             

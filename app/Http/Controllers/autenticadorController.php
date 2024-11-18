@@ -91,15 +91,19 @@ class autenticadorController extends Controller
        
         $mensaje='El usuario '.$user->usuario_nom.' ha iniciado sesion';
 
-        Http::withHeaders([
-            'Authorization' => 'Bearer ' . env('SLACK_KEY'),
-            'Content-Type' => 'application/json',
-        ])
-        ->withoutVerifying() // Deshabilita la verificación SSL
-        ->post('https://slack.com/api/chat.postMessage', [
-            'channel' => '#informal',
-            'text' => $mensaje,
-        ]);
+        //validamos si exito o no el SLACK_KEY
+        if (env('SLACK_KEY')) {
+            Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('SLACK_KEY'),
+                'Content-Type' => 'application/json',
+            ])
+            ->withoutVerifying() // Deshabilita la verificación SSL
+            ->post('https://slack.com/api/chat.postMessage', [
+                'channel' => '#informal',
+                'text' => $mensaje,
+            ]);
+        }
+    
       
       
 

@@ -13,7 +13,6 @@ class TinacoController extends Controller
         
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -31,6 +30,7 @@ class TinacoController extends Controller
         $tinaco = new Tinaco();
         $tinaco->name = $request->name;
         $tinaco->id_usuario = $id_usuario;
+        $tinaco->nivel_del_agua = 0;
         $tinaco->save();
         return response()->json(['message' => 'Tinaco creado correctamente.'], 201);
     }
@@ -62,5 +62,5 @@ class TinacoController extends Controller
         $tinaco = Tinaco::find($id);
         return response()->json($tinaco, 200);
     }
-    
+
 }

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Http;
 
 
 class autenticadorController extends Controller
@@ -87,6 +88,20 @@ class autenticadorController extends Controller
                 'message' => 'Account not activated'
             ], 401);
         }*/
+       
+        $mensaje='El usuario '.$user->usuario_nom.' ha iniciado sesion';
+
+        Http::withHeaders([
+            'Authorization' => 'Bearer ' . env('SLACK_KEY'),
+            'Content-Type' => 'application/json',
+        ])
+        ->withoutVerifying() // Deshabilita la verificación SSL
+        ->post('https://slack.com/api/chat.postMessage', [
+            'channel' => '#informal',
+            'text' => $mensaje,
+        ]);
+      
+      
 
         return response()->json([
             'success' => true,
@@ -201,7 +216,6 @@ class autenticadorController extends Controller
         $user = Usuario::findOrFail($userId);
         return view('auth.reset_password_form', ['user' => $user]);
     }
-
     public function resetPassword(Request $request, $userId)
     {
         $validator = Validator::make($request->all(), [
@@ -221,10 +235,6 @@ class autenticadorController extends Controller
         ])->setStatusCode(200);
 
     }
-
-
-
-
     public function logout(Request $request)
     {
 
@@ -255,9 +265,6 @@ class autenticadorController extends Controller
             ]
         ], 200);
     }
-
-
-
     public function activate($userId)
     {
         $user = Usuario::find($userId);
@@ -283,15 +290,6 @@ class autenticadorController extends Controller
             'message' => 'Account activated successfully',
         ], 200);
     }
-
-    //agregar esto a activate
-
-    /*
-    necesito: id del usuario,
-    email,
-    nombre
-    */
-
     public function resendActivation(Request $request)
     {
         $data = $request->all();

@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Notification;
 
 
 // paquete para guardar imagenes ejemplo:
@@ -46,6 +47,7 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Tinaco::class, 'id_usuario');
     }
+    
     public function notifications()
     {
         return $this->hasMany(Notification::class);
@@ -61,42 +63,3 @@ class Usuario extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 }
-
-
-// cosa a agregar al register de autenticadorController:
-/*
-public function register(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'usuario_nom' => 'required',
-        'email' => 'required|email|unique:usuario',
-        'password' => 'required|min:6'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'message' => $validator->errors()
-        ], 400);
-    }
-
-    // Crear el usuario
-    $user = Usuario::create([
-        'usuario_nom' => $request->usuario_nom,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'role_id' => 1, // Asignar el role_id del rol 'guest' (por ejemplo, el ID 1)
-    ]);
-
-    // Asignar el rol con Spatie (opcional)
-    $user->assignRole('guest'); // Asumiendo que el rol 'guest' está definido
-
-    $url = URL::temporarySignedRoute('activate', now()->addMinutes(5), ['user' => $user->id]);
-
-    Mail::to($user->email)->send(new Activacion($user, $url));
-
-    return response()->json([
-        'message' => 'Usuario creado exitosamente, revisa tu correo para activarlo.'
-    ], 201);
-}
-
-*/

@@ -3,6 +3,7 @@
 use App\Http\Controllers\autenticadorController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\tinacoController;
+use App\Http\Controllers\notificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,7 @@ Route::get('v1/tinaco', [TinacoController::class, 'listartinacos'])->middleware(
 Route::delete('v1/tinaco/{id}', [TinacoController::class, 'eliminartinaco'])->middleware('auth:sanctum');
 Route::get('v1/tinaco/{id}', [TinacoController::class, 'gettinaco'])->middleware('auth:sanctum');
 Route::put('v1/tinaco/{id}', [TinacoController::class, 'actualizartinaco'])->middleware('auth:sanctum');
+// Link para las notificaciones
+Route::get('v1/notifications', [notificationController::class, 'index'])->middleware('auth:sanctum');
+Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead'])->middleware('auth:sanctum');
+Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy'])->middleware('auth:sanctum');

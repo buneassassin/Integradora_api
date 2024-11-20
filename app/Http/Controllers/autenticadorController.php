@@ -6,6 +6,8 @@ use App\Mail\Activacion;
 use App\Mail\ResetPassword;
 use App\Models\Usuario;
 use App\Models\Persona;
+use App\Models\Tinaco;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -88,8 +90,8 @@ class autenticadorController extends Controller
                 'message' => 'Account not activated'
             ], 401);
         }*/
-       
-        $mensaje='El usuario '.$user->usuario_nom.' ha iniciado sesion';
+
+        $mensaje = 'El usuario ' . $user->usuario_nom . ' ha iniciado sesion';
 
         //validamos si exito o no el SLACK_KEY
         if (env('SLACK_KEY')) {
@@ -97,15 +99,21 @@ class autenticadorController extends Controller
                 'Authorization' => 'Bearer ' . env('SLACK_KEY'),
                 'Content-Type' => 'application/json',
             ])
-            ->withoutVerifying() // Deshabilita la verificación SSL
-            ->post('https://slack.com/api/chat.postMessage', [
-                'channel' => '#informal',
-                'text' => $mensaje,
-            ]);
+                ->withoutVerifying() // Deshabilita la verificación SSL
+                ->post('https://slack.com/api/chat.postMessage', [
+                    'channel' => '#informal',
+                    'text' => $mensaje,
+                ]);
         }
-    
-      
-      
+
+
+        $mesaje = '¡Hola ' . $user->usuario_nom . '! Bienvenido a la plataforma';
+        $notificacion = new Notification();
+        $notificacion->message = $mesaje;
+        $notificacion->id_usuario = $user->id;
+        $notificacion->type = 'alert';
+        $notificacion->is_read = false;
+        $notificacion->save();
 
         return response()->json([
             'success' => true,
@@ -237,7 +245,6 @@ class autenticadorController extends Controller
         return response()->json([
             'message' => 'Contraseña cambiada correctamente!'
         ])->setStatusCode(200);
-
     }
     public function logout(Request $request)
     {

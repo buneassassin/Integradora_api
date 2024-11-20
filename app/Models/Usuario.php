@@ -46,6 +46,11 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(Tinaco::class, 'id_usuario');
     }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
 
     protected $hidden = [
         'password',

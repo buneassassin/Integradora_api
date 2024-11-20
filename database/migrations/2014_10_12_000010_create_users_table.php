@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('foto_perfil')->nullable();
             $table->string('password');
             $table->boolean('is_active')->default(false);
+            $table->boolean('is_Inactive')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -109,6 +109,7 @@ class autenticadorController extends Controller
 
         $mesaje = '¡Hola ' . $user->usuario_nom . '! Bienvenido a la plataforma';
         $notificacion = new Notification();
+        $notificacion->title = 'Bienvenido';
         $notificacion->message = $mesaje;
         $notificacion->id_usuario = $user->id;
         $notificacion->type = 'alert';

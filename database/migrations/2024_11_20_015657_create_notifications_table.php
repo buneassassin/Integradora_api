@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_usuario')->constrained('usuario')->onDelete('cascade');
             $table->string('type');           // Tipo de notificación (info, alerta, etc.)
+            $table->string('title');          // Título de la notificación
             $table->text('message');          // Mensaje de la notificación
             $table->boolean('is_read')->default(false); // Estado de lectura
             $table->timestamps();

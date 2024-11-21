@@ -7,23 +7,33 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Usuario;
+use Carbon\Carbon;
 
 class NotificationController extends Controller
 {
+
     public function index()
     {
         $user = Auth::user();
-        //filtramos las notificaciones por el id del usuario por fecha mas reciente
         $notifications = Notification::where('id_usuario', $user->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($notification) {
+                // Calculamos la diferencia en minutos
+                $diffInMinutes = Carbon::parse($notification->created_at)->diffInMinutes(Carbon::now());
 
+                // Asignamos el número de minutos al campo 'formatted_created_at'
+                $notification->formatted_created_at = $diffInMinutes;
+
+                return $notification;
+            });
 
         return response()->json([
             'status' => 'success',
             'data' => $notifications
         ]);
     }
+
 
     // Marcar una notificación como leída
     public function markAsRead($id)

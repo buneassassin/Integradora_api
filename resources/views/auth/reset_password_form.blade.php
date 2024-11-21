@@ -8,7 +8,7 @@
         /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #e3f2fd; /* Fondo azul claro */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,58 +17,76 @@
         }
 
         h1 {
-            color: #333;
+            color: #0d47a1; /* Azul fuerte */
         }
 
         /* Estilo del contenedor del formulario */
         .form-container {
-            background-color: #fff;
+            background-color: #ffffff;
             padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
             width: 100%;
             max-width: 400px;
+            text-align: center;
         }
 
         /* Estilos del formulario */
         form {
             display: flex;
             flex-direction: column;
+            margin-top: 1rem;
         }
 
         label {
+            text-align: left;
             margin-bottom: 0.5rem;
             font-weight: bold;
+            color: #1565c0; /* Azul intermedio */
         }
 
         input[type="password"] {
-            padding: 0.5rem;
+            padding: 0.8rem;
             margin-bottom: 1rem;
-            border: 1px solid #ccc;
+            border: 1px solid #90caf9; /* Borde azul claro */
             border-radius: 5px;
             font-size: 1rem;
         }
 
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #1e88e5; /* Azul más intenso */
+            box-shadow: 0 0 4px rgba(30, 136, 229, 0.5);
+        }
+
         button {
-            padding: 0.7rem;
-            background-color: #4CAF50;
+            padding: 0.8rem;
+            background-color: #1e88e5; /* Azul medio */
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #1565c0; /* Azul más oscuro */
         }
 
         /* Mensaje de error */
         .error {
-            color: red;
+            color: #d32f2f; /* Rojo para destacar errores */
             font-size: 0.9rem;
             margin-bottom: 1rem;
             display: none;
+        }
+
+        /* Imagen decorativa */
+        .form-container img {
+            width: 100px;
+            margin-bottom: 1rem;
         }
     </style>
 </head>

@@ -34,7 +34,7 @@ Route::post('v1/reset-password', [autenticadorController::class, 'recuperarPassw
 Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password');
 Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'user.admin', 'inactive.block','active.only'])->group(function () {
     // Link para la imagen
     Route::post('v1/imagen', [ImagenController::class, 'store']);
     Route::get('v1/imagen', [ImagenController::class, 'ver']);
@@ -48,4 +48,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('v1/notifications', [notificationController::class, 'index']);
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
+});
+// Link de administracion
+Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
+    Route::get('v1/notificationsAdmin', [notificationController::class, 'EnviarNotificacionesGeneral']);
 });

@@ -83,4 +83,6 @@ class TinacoController extends Controller
         return response()->json($tinaco, 200);
     }
 
+   
+
 }

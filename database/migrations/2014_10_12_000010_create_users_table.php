@@ -20,12 +20,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('foto_perfil')->nullable();
+            $table->string('rol')->default('Guest');
             $table->string('password');
             $table->boolean('is_active')->default(false);
-            $table->boolean('is_Inactive')->default(false);
+            $table->boolean('is_Inactive')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });
+    
     }
 
     /**

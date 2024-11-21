@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Models\User;
+use App\Models\Usuario;
 
 class NotificationController extends Controller
 {
@@ -18,7 +18,7 @@ class NotificationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        
+
         return response()->json([
             'status' => 'success',
             'data' => $notifications
@@ -57,5 +57,20 @@ class NotificationController extends Controller
             'status' => 'success',
             'message' => 'Notificación eliminada correctamente.'
         ]);
+    }
+    // funciones de Admin
+    public function EnviarNotificacionesGeneral(Request $request)
+    {
+        $usuario = Usuario::all();
+        $mesaje = $request->mesaje;
+        foreach ($usuario as $usuarios) {
+            $notification = new Notification();
+            $notification->id_usuario = $usuarios->id;
+            $notification->type = $request->type;
+            $notification->mesaje = $mesaje;
+            $notification->is_read = false;
+            $notification->save();
+        }
+        return response()->json(['message' => 'Notificaciones enviadas correctamente.'], 200);
     }
 }

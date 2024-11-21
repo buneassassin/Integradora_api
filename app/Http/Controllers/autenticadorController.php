@@ -53,11 +53,11 @@ class autenticadorController extends Controller
         $user->password = bcrypt($request->password);
         $user->save();
 
-        /*
+        
         $url = URL::temporarySignedRoute('activate', now()->addMinutes(1), ['user' => $user->id]);
 
         Mail::to($user->email)->send(new Activacion($user, $url));
-        */
+        
         return response()->json([
             'success' => true,
             'message' => 'Usuario registrado exitosamente'
@@ -293,7 +293,7 @@ class autenticadorController extends Controller
         }
 
         $user->is_active = true;
-        //$user->rol = 'user';
+        $user->rol = 'user';
 
         $user->save();
 

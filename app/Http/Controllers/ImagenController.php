@@ -12,35 +12,38 @@ class ImagenController extends Controller
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // 2MB máximo
         ]);
-    
+
         // sacamos la imagen del request
         $image = $request->file('image');
-    
+
         $imagePath = $image->store('images', 'public');
-    
+
         // Guardar la ruta de la imagen en la base de datos
         $user = $request->user();
         $user->foto_perfil = $imagePath;
         $user->save();
-     
-        return response()->json(['message' => 'Imagen guardada correctamente.'], 200);
 
+        return response()->json(['message' => 'Imagen guardada correctamente.'], 200);
     }
-    public function ver(Request $request) {
+    public function ver(Request $request)
+    {
         $user = $request->user();
-    
+        $fotodefault = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+        // Verificar si el foto de perfil es la defecto
+        if ($user->foto_perfil === $fotodefault) {
+            return response()->json([
+                'user' => [
+                    'foto_perfil' => $fotodefault,
+                ]
+            ], 200);
+        }
         // Asegúrate de que $user->foto_perfil tenga solo el nombre del archivo, sin rutas adicionales
         $imageUrl = url('storage/images/' . basename($user->foto_perfil));
-    
+
         return response()->json([
             'user' => [
                 'foto_perfil' => $imageUrl,
             ]
         ], 200);
     }
-    
-    
-    
-    
-
 }

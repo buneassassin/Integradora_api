@@ -11,10 +11,10 @@ class TinacoController extends Controller
 {
 
     public function agregarTinaco(Request $request)
-    { 
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-        //    'sensor_ids' => 'required|array',  // Asegúrate de que 'sensor_ids' sea un array de IDs de sensores.
+            //    'sensor_ids' => 'required|array',  // Asegúrate de que 'sensor_ids' sea un array de IDs de sensores.
         ]);
 
         if ($validator->fails()) {
@@ -24,22 +24,19 @@ class TinacoController extends Controller
         }
 
         // Validar si el tinaco ya existe
-        $tinaco = Tinaco::where('name', $request->name)->first();
-        if ($tinaco) {
+        $tinacos = Tinaco::where('name', $request->name)->where('id_usuario', auth()->user()->id)->first();
+        if ($tinacos) {
             return response()->json(['message' => 'El tinaco ya existe con ese nombre.'], 400);
         }
-
-        // Obtener el ID del usuario autenticado
         $id_usuario = auth()->user()->id;
 
-        // Crear el nuevo tinaco
         $tinaco = new Tinaco();
         $tinaco->name = $request->name;
         $tinaco->id_usuario = $id_usuario;
         $tinaco->nivel_del_agua = 0;
         $tinaco->save();
 
- /*       // Vincular cada sensor a ese tinaco
+        /*       // Vincular cada sensor a ese tinaco
         foreach ($request->sensor_ids as $sensor_id) {
             $tinaco_sensor = new SensorTinaco();
             $tinaco_sensor->sensor_id = $sensor_id;
@@ -85,7 +82,7 @@ class TinacoController extends Controller
         if (!$tinaco) {
             return response()->json(['message' => 'El tinaco no existe.'], 404);
         }
-        $tinacos = Tinaco::where('name', $request->name)->first();
+        $tinacos = Tinaco::where('name', $request->name)->where('id_usuario', auth()->user()->id)->first();
         if ($tinacos) {
             return response()->json(['message' => 'El tinaco ya existe con ese nombre.'], 400);
         }

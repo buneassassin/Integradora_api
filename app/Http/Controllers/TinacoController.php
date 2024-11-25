@@ -14,7 +14,7 @@ class TinacoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            //    'sensor_ids' => 'required|array',  // Asegúrate de que 'sensor_ids' sea un array de IDs de sensores.
+            //'sensor_ids' => 'required|array',  // Asegúrate de que 'sensor_ids' sea un array de IDs de sensores.
         ]);
 
         if ($validator->fails()) {
@@ -51,10 +51,7 @@ class TinacoController extends Controller
     {
         $id_usuario = auth()->user()->id;
         $tinacos = Tinaco::where('id_usuario', $id_usuario)->get();
-        //veremos si hay tinacos
-        if ($tinacos->isEmpty()) {
-            return response()->json(['message' => 'No hay tinacos.'], 404);
-        }
+      
         return response()->json($tinacos, 200);
     }
     public function eliminartinaco($id)

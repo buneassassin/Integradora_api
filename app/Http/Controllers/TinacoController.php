@@ -94,6 +94,6 @@ class TinacoController extends Controller
         if (!$tinaco) {
             return response()->json(['message' => 'El tinaco no existe.'], 404);
         }
-        return response()->json($tinaco, 200);
+        return response()->json(['tinaco' => $tinaco], 200);    
     }
 }

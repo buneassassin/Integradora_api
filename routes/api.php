@@ -25,11 +25,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Link para el registro
 Route::post('v1/register', [autenticadorController::class, 'register']);
 Route::get('v1/activate/{user}', [autenticadorController::class, 'activate'])->name('activate'); //->middleware('signed');
-Route::post('v1/login', [autenticadorController::class, 'login']);
+Route::post('v1/login', [autenticadorController::class, 'login'])->middleware('inactive.block');
 Route::post('v1/update', [autenticadorController::class, 'update'])->middleware('auth:sanctum');
 Route::post('v1/updatePassword', [autenticadorController::class, 'updatePassword'])->middleware('auth:sanctum');
 Route::post('v1/logout', [autenticadorController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('v1/me', [autenticadorController::class, 'me'])->middleware('auth:sanctum');
+Route::get('v1/me', [autenticadorController::class, 'me'])->middleware(['auth:sanctum','inactive.block']);
 // Link para el cambio de contraseña
 Route::post('v1/reset-password', [autenticadorController::class, 'recuperarPassword']);
 Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password');
@@ -59,4 +59,6 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/usuariosConTinacos', [AdminController::class, 'obtenerUsuariosConTinacos']);
     Route::post('v1/desactivarUsuario', [AdminController::class, 'desactivarUsuario']);
     Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);
+    Route::get('v1/getUserStatistics', [AdminController::class, 'getUserStatistics']);
+    Route::get('v1/obtenerRol', [AdminController::class, 'obtenerRol']);
 });

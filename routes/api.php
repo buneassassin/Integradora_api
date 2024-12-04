@@ -4,6 +4,7 @@ use App\Http\Controllers\autenticadorController;
 use App\Http\Controllers\ImagenController;
 use App\Http\Controllers\TinacoController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -52,4 +53,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Link de administracion
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/notificationsAdmin', [notificationController::class, 'EnviarNotificacionesGeneral']);
+});
+Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
+    Route::get('v1/admin-action', [AdminController::class, 'performAction']);
+    Route::get('v1/usuariosConTinacos', [AdminController::class, 'obtenerUsuariosConTinacos']);
+    Route::post('v1/desactivarUsuario', [AdminController::class, 'desactivarUsuario']);
+    Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);
 });

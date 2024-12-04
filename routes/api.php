@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\autenticadorController;
 use App\Http\Controllers\ImagenController;
-use App\Http\Controllers\tinacoController;
-use App\Http\Controllers\notificationController;
+use App\Http\Controllers\TinacoController;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

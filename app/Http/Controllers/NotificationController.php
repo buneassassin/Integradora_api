@@ -19,20 +19,33 @@ class NotificationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($notification) {
-                // Calculamos la diferencia en minutos
-                $diffInMinutes = Carbon::parse($notification->created_at)->diffInMinutes(Carbon::now());
-
-                // Asignamos el número de minutos al campo 'formatted_created_at'
-                $notification->formatted_created_at = $diffInMinutes;
-
+                $createdTime = Carbon::parse($notification->created_at);
+                $diffInMinutes = $createdTime->diffInMinutes(Carbon::now());
+    
+                if ($diffInMinutes < 60) {
+                    $formattedTime = $diffInMinutes . ' minuto' . ($diffInMinutes > 1 ? 's' : '');
+                } elseif ($diffInMinutes < 1440) { // 60 minutos * 24 horas
+                    $hours = floor($diffInMinutes / 60);
+                    $formattedTime = $hours . ' hora' . ($hours > 1 ? 's' : '');
+                } elseif ($diffInMinutes < 525600) { // 1440 minutos * 365 días
+                    $days = floor($diffInMinutes / 1440);
+                    $formattedTime = $days . ' día' . ($days > 1 ? 's' : '');
+                } else {
+                    $years = floor($diffInMinutes / 525600); // 525600 minutos = 1 año
+                    $formattedTime = $years . ' año' . ($years > 1 ? 's' : '');
+                }
+    
+                $notification->formatted_created_at = $formattedTime;
+    
                 return $notification;
             });
-
+    
         return response()->json([
             'status' => 'success',
             'data' => $notifications
         ]);
     }
+    
 
 
     // Marcar una notificación como leída

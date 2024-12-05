@@ -41,6 +41,7 @@ class AdminController extends Controller
                     'email' => $usuario->email,
                     'rol' => $usuario->rol,
                     'is_active' => $usuario->is_active,
+                    'is_Inactive'=> $usuario->is_Inactive,
                     'fecha_registro' => $usuario->created_at->toDateTimeString(),
                     'tiempo_registrado' => $usuario->created_at->diffForHumans(),
                     'numero_tinacos' => $usuario->tinacos->count(),

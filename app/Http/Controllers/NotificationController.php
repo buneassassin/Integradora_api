@@ -21,7 +21,7 @@ class NotificationController extends Controller
             ->map(function ($notification) {
                 $createdTime = Carbon::parse($notification->created_at);
                 $diffInMinutes = $createdTime->diffInMinutes(Carbon::now());
-    
+
                 if ($diffInMinutes < 60) {
                     $formattedTime = $diffInMinutes . ' minuto' . ($diffInMinutes > 1 ? 's' : '');
                 } elseif ($diffInMinutes < 1440) { // 60 minutos * 24 horas
@@ -34,18 +34,18 @@ class NotificationController extends Controller
                     $years = floor($diffInMinutes / 525600); // 525600 minutos = 1 año
                     $formattedTime = $years . ' año' . ($years > 1 ? 's' : '');
                 }
-    
+
                 $notification->formatted_created_at = $formattedTime;
-    
+
                 return $notification;
             });
-    
+
         return response()->json([
             'status' => 'success',
             'data' => $notifications
         ]);
     }
-    
+
 
 
     // Marcar una notificación como leída
@@ -84,16 +84,34 @@ class NotificationController extends Controller
     // funciones de Admin
     public function EnviarNotificacionesGeneral(Request $request)
     {
+         // Validar los datos del formulario
+         $validator = Validator::make($request->all(), [
+            'mesaje' => 'required',
+            'type' => 'required',
+            'title' => 'required'
+         ]);
+         if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+        
         $usuario = Usuario::all();
         $mesaje = $request->mesaje;
         foreach ($usuario as $usuarios) {
             $notification = new Notification();
             $notification->id_usuario = $usuarios->id;
             $notification->type = $request->type;
-            $notification->mesaje = $mesaje;
+            $notification->title = $request->title;
+            $notification->message = $mesaje;
             $notification->is_read = false;
             $notification->save();
         }
         return response()->json(['message' => 'Notificaciones enviadas correctamente.'], 200);
+    }
+    public function gettype()
+    {
+        $type = ['info', 'alert'];
+        return response()->json(['types' => $type], 200);
     }
 }

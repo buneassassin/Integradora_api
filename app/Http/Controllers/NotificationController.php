@@ -41,7 +41,7 @@ class NotificationController extends Controller
             });
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'data' => $notifications
         ]);
     }
@@ -77,7 +77,7 @@ class NotificationController extends Controller
         $notification->delete();
 
         return response()->json([
-            'status' => 'success',
+            'success' => true,
             'message' => 'Notificación eliminada correctamente.'
         ]);
     }

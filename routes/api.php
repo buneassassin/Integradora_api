@@ -68,11 +68,11 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/gettype', [notificationController::class, 'gettype']);
 
 });
-Route::get('/ada/{feed}', [AdafruitController::class, 'getFeedData']);
+Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 
-Route::post('/temperatura', [TemperaturaController::class, 'obtenertemp']);
+Route::post('v1/temperatura', [TemperaturaController::class, 'obtenertemp']);
 
-Route::get('/ph', [phController::class, 'obtenerph']);
-Route::get('/turbidez', [turbidezController::class, 'obtenerturbidez']);
-Route::get('/tds', [TDSController::class, 'obtenerturbidez']);
-Route::get('/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);
+Route::post('v1/ph', [phController::class, 'obtenerph']);
+Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
+Route::post('v1/tds', [TDSController::class, 'obtenerturbidez']);
+Route::post('v1/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);

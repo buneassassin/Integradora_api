@@ -35,6 +35,15 @@ class TinacoController extends Controller
         $tinaco->id_usuario = $id_usuario;
         $tinaco->nivel_del_agua = 0;
         $tinaco->save();
+        //agremaso los 5 sensores por defecto
+
+        $sensor_ids = [1, 2, 3, 4, 5];
+        foreach ($sensor_ids as $sensor_id) {
+            $tinaco_sensor = new SensorTinaco();
+            $tinaco_sensor->sensor_id = $sensor_id;
+            $tinaco_sensor->tinaco_id = $tinaco->id;
+            $tinaco_sensor->save();
+        }
 
         /*       // Vincular cada sensor a ese tinaco
         foreach ($request->sensor_ids as $sensor_id) {

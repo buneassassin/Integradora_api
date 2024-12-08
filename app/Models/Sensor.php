@@ -11,20 +11,13 @@ class Sensor extends Model
 
     protected $table = 'sensor';
     protected $fillable = [
-        'id_valor',
-        'id_tinaco',
         'nombre',
         'modelo',
         'unidad_medida',
     ];
 
-    public function valores()
+    public function sensorTinacos()
     {
-        return $this->hasMany(Valor::class, 'id_sensor');
-    }
-
-    public function rango()
-    {
-        return $this->belongsTo(Rango::class, 'id_valor');
+        return $this->hasMany(SensorTinaco::class, 'sensor_id');
     }
 }

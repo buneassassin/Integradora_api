@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('valor', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_sensor')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('id_rango')->constrained('rango')->onDelete('cascade');
             $table->decimal('value', 10, 2)->nullable();
             $table->timestamps();

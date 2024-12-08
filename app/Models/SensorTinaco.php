@@ -13,8 +13,10 @@ class SensorTinaco extends Model
 
     protected $fillable = [
         'sensor_id',
-        'tinaco_id'
+        'tinaco_id',
+        'id_valor',
     ];
+
     public function sensor()
     {
         return $this->belongsTo(Sensor::class, 'sensor_id');
@@ -23,5 +25,10 @@ class SensorTinaco extends Model
     public function tinaco()
     {
         return $this->belongsTo(Tinaco::class, 'tinaco_id');
+    }
+
+    public function valor()
+    {
+        return $this->hasOne(Valor::class, 'id', 'id_valor');
     }
 }

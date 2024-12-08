@@ -17,9 +17,9 @@ class Persona extends Model
         'telefono',
     ];
 
-    public function usuario()
+    public function usuarios()
     {
-        
-        return $this->belongsTo(Usuario::class, 'id_usuario');
+        return $this->hasMany(Usuario::class, 'id_persona');
     }
+    
 }

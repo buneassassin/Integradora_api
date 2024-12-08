@@ -11,15 +11,9 @@ class Valor extends Model
 
     protected $table = 'valor';
     protected $fillable = [
-        'id_sensor',
         'id_rango',
         'value',
     ];
-
-    public function sensor()
-    {
-        return $this->belongsTo(Sensor::class, 'id_sensor');
-    }
 
     public function rango()
     {

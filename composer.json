@@ -9,6 +9,7 @@
         "cloudinary-labs/cloudinary-laravel": "^2.1",
         "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
+        "illuminate/support": "*",
         "intervention/image": "^3.9",
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",

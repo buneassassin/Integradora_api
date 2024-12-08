@@ -7,6 +7,12 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TemperaturaController;
+use App\Http\Controllers\phController;
+use App\Http\Controllers\turbidezController;
+use App\Http\Controllers\TDSController;
+use App\Http\Controllers\ultrasonicoController;
+use App\Http\Controllers\AdafruitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Link para el registro
 Route::post('v1/register', [autenticadorController::class, 'register']);
 Route::get('v1/activate/{user}', [autenticadorController::class, 'activate'])->name('activate'); //->middleware('signed');
-Route::post('v1/login', [autenticadorController::class, 'login'])->middleware('inactive.block');
+Route::post('v1/login', [autenticadorController::class, 'login']); //->middleware('inactive.block');
 Route::post('v1/update', [autenticadorController::class, 'update'])->middleware('auth:sanctum');
 Route::post('v1/updatePassword', [autenticadorController::class, 'updatePassword'])->middleware('auth:sanctum');
 Route::post('v1/logout', [autenticadorController::class, 'logout'])->middleware('auth:sanctum');
@@ -62,3 +68,11 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/getUserStatistics', [AdminController::class, 'getUserStatistics']);
     Route::get('v1/obtenerRol', [AdminController::class, 'obtenerRol']);
 });
+Route::get('/ada/{feed}', [AdafruitController::class, 'getFeedData']);
+
+Route::post('/temperatura', [TemperaturaController::class, 'obtenertemp']);
+
+Route::get('/ph', [phController::class, 'obtenerph']);
+Route::get('/turbidez', [turbidezController::class, 'obtenerturbidez']);
+Route::get('/tds', [TDSController::class, 'obtenerturbidez']);
+Route::get('/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);

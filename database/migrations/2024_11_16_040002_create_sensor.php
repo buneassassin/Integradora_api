@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('unidad_medida')->nullable();
             $table->timestamps();
         });
-        Sensor::create(['nombre' => 'Sensor 1', 'modelo' => 'Modelo 1', 'unidad_medida' => 'Unidad de Medida 1']);
-        Sensor::create(['nombre' => 'Sensor 2', 'modelo' => 'Modelo 2', 'unidad_medida' => 'Unidad de Medida 2']);
+        Sensor::create(['nombre' => 'Ultrasónico JSN-SR04T-2.0', 'modelo' => 'Modelo 1', 'unidad_medida' => 'Unidad de Medida 1']);
+        Sensor::create(['nombre' => '', 'modelo' => 'Modelo 2', 'unidad_medida' => 'Unidad de Medida 2']);
         Sensor::create(['nombre' => 'Sensor 3', 'modelo' => 'Modelo 3', 'unidad_medida' => 'Unidad de Medida 3']);
         Sensor::create(['nombre' => 'Sensor 4', 'modelo' => 'Modelo 4', 'unidad_medida' => 'Unidad de Medida 4']);
         Sensor::create(['nombre' => 'Sensor 5', 'modelo' => 'Modelo 5', 'unidad_medida' => 'Unidad de Medida 5']);

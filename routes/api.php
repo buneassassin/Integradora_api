@@ -56,10 +56,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
 });
-// Link de administracion
-Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
-    Route::get('v1/notificationsAdmin', [notificationController::class, 'EnviarNotificacionesGeneral']);
-});
+
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/admin-action', [AdminController::class, 'performAction']);
     Route::get('v1/usuariosConTinacos', [AdminController::class, 'obtenerUsuariosConTinacos']);
@@ -67,6 +64,9 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);
     Route::get('v1/getUserStatistics', [AdminController::class, 'getUserStatistics']);
     Route::get('v1/obtenerRol', [AdminController::class, 'obtenerRol']);
+    Route::post('v1/EnviarNotificacionesGeneral', [notificationController::class, 'EnviarNotificacionesGeneral']);
+    Route::get('v1/gettype', [notificationController::class, 'gettype']);
+
 });
 Route::get('/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 

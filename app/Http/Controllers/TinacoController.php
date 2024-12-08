@@ -44,14 +44,17 @@ class TinacoController extends Controller
             $tinaco_sensor->save();
         }*/
 
-        return response()->json(['message' => 'Tinaco creado correctamente.'], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Tinaco creado correctamente.'
+        ], 201);
     }
 
     public function listartinacos()
     {
         $id_usuario = auth()->user()->id;
         $tinacos = Tinaco::where('id_usuario', $id_usuario)->get();
-      
+
         return response()->json($tinacos, 200);
     }
     public function eliminartinaco($id)
@@ -94,6 +97,6 @@ class TinacoController extends Controller
         if (!$tinaco) {
             return response()->json(['message' => 'El tinaco no existe.'], 404);
         }
-        return response()->json(['tinaco' => $tinaco], 200);    
+        return response()->json(['tinaco' => $tinaco], 200);
     }
 }

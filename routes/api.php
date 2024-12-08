@@ -13,6 +13,7 @@ use App\Http\Controllers\turbidezController;
 use App\Http\Controllers\TDSController;
 use App\Http\Controllers\ultrasonicoController;
 use App\Http\Controllers\AdafruitController;
+use App\Http\Controllers\ReporteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('v1/notifications', [notificationController::class, 'index']);
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
+    // Link para el reporte
+    Route::get('v1/reporte-datos', [ReporteController::class, 'obtenerDatos']);
+    Route::get('v1/reporte-datos-fecha', [ReporteController::class, 'obtenerDatosPorFecha']);
+    Route::post('v1/reporte-datos-sensor', [ReporteController::class, 'obtenerDatosPorSensor']);
+
 });
 
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {

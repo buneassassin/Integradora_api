@@ -7,6 +7,12 @@ use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Rango;
+
+
+use App\Models\Tinaco;
+use App\Models\SensorTinaco;
+use Illuminate\Support\Facades\Auth;
+
 class ultrasonicoController extends Controller
 {
     protected $adafruitService;
@@ -17,10 +23,24 @@ class ultrasonicoController extends Controller
     }
     
     
-    public function obtenerturbidez()
+    public function obtenerturbidez(Request $request)
     {
+        $usuario = Auth::user();
+        $tinacoId = $request->input('tinaco_id');
+        $tinaco = Tinaco::find($tinacoId);
+
+        $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
+        ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+        ->where('sensor.nombre', 'Ultrasonico') 
+        ->first();
+
+        if (!$sensorTinaco) {
+            return response()->json(['mensaje' => 'Sensor ultrasonico no encontrado para el tinaco especificado'], 404);
+        }
+        $sensor = $sensorTinaco->sensor;
+
         $data = $this->adafruitService->getFeedData("ultrasonico");
-        $this->guardarDatos($data);
+        $this->guardarDatos($data, $sensor, $usuario);
     
         $mensaje = $this->significadoDatos($data);
     
@@ -82,7 +102,7 @@ class ultrasonicoController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-        public function guardarDatos($data)
+        public function guardarDatos($data, $sensor, $usuario)
         {
             $data = is_string($data) ? json_decode($data) : $data;
             

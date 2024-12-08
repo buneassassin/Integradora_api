@@ -7,6 +7,11 @@ use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Rango;
+
+
+use App\Models\Tinaco;
+use App\Models\SensorTinaco;
+use Illuminate\Support\Facades\Auth;
 class TDSController extends Controller
 {
     protected $adafruitService;
@@ -17,10 +22,24 @@ public function __construct(AdafruitService $adafruitService)
 }
 
 
-public function obtenerturbidez()
+public function obtenerturbidez(Request $request)
 {
+    $usuario = Auth::user();
+    $tinacoId = $request->input('tinaco_id');
+    $tinaco = Tinaco::find($tinacoId);
+
+    $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
+    ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+    ->where('sensor.nombre', 'TDS') 
+    ->first();
+
+    if (!$sensorTinaco) {
+        return response()->json(['mensaje' => 'Sensor de TDS no encontrado para el tinaco especificado'], 404);
+    }
+    $sensor = $sensorTinaco->sensor;
+
     $data = $this->adafruitService->getFeedData("tds");
-    $this->guardarDatos($data);
+    $this->guardarDatos($data, $sensor, $usuario);
 
     $mensaje = $this->significadoDatos($data);
 
@@ -90,8 +109,8 @@ public function obtenerturbidez()
              //   return "Temperatura baja";
                 //break;
         
-    public function guardarDatos($data)
-    {
+        public function guardarDatos($data, $sensor, $usuario)
+      {
         $data = is_string($data) ? json_decode($data) : $data;
         
         $valor = $data['last_value'] ?? null;

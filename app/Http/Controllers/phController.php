@@ -35,7 +35,7 @@ class phController extends Controller
         ->first();
 
         if (!$sensorTinaco) {
-            return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
+            return response()->json(['mensaje' => 'Sensor de ph no encontrado para el tinaco especificado'], 404);
         }
         $sensor = $sensorTinaco->sensor;
 

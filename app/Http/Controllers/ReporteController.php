@@ -65,30 +65,29 @@ class ReporteController extends Controller
     public function obtenerDatosPorSensor(Request $request)
     {
         try {
-
             // Validamos que el nombre del sensor sea enviado
             $validator = Validator::make($request->all(), [
                 'nombre' => 'required|string'
             ]);
-
+    
             if ($validator->fails()) {
                 return response()->json([
                     'status' => 'error',
                     'message' => $validator->errors()
                 ], 400);
             }
-
+    
             // Obtenemos el nombre del sensor desde el body
             $nombreSensor = $request->input('nombre');
-
+    
             // Consulta para obtener los datos completos del sensor
             $datos = DB::table('valor') // Asumiendo que 'valor' es la tabla donde están los valores
                 ->join('sensor', 'valor.id_sensor', '=', 'sensor.id')
                 ->select('sensor.nombre', 'sensor.id as id_sensor', 'valor.value', 'valor.created_at')
                 ->where('sensor.nombre', '=', $nombreSensor)
-                ->orderBy('valor.created_at', 'asc') // Para obtener los valores históricos en orden cronológico
+                ->orderBy('valor.created_at', 'desc') // Ordenamos en orden descendente
                 ->get();
-
+    
             // Verificamos si se encontraron datos
             if ($datos->isEmpty()) {
                 return response()->json([
@@ -96,13 +95,13 @@ class ReporteController extends Controller
                     'message' => 'No se encontraron datos para el sensor especificado.'
                 ], 404);
             }
-
+    
             // Retornamos los datos completos del sensor
             return response()->json([
                 'status' => 'success',
                 'data' => $datos
             ], 200);
-
+    
         } catch (\Exception $e) {
             // En caso de error, devolvemos el mensaje del error
             return response()->json([
@@ -111,4 +110,5 @@ class ReporteController extends Controller
             ], 500);
         }
     }
+    
 }

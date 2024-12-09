@@ -11,7 +11,6 @@ class Valor extends Model
 
     protected $table = 'valor';
     protected $fillable = [
-        'id_rango',
         'value',
     ];
 

@@ -22,12 +22,12 @@ return new class extends Migration
             $table->string('unidad_medida')->nullable();
             $table->timestamps();
         });
-        
-        Sensor::create(['nombre' => 'Ultrasonico','id_rango' => 1, 'modelo' => 'Ultrasónico JSN-SR04T-2.0', 'unidad_medida' => 'Hz']);
-        Sensor::create(['nombre' => 'Temperatura', 'id_rango' => 1,'modelo' => 'Temperatura MAX6675 ', 'unidad_medida' => 'C°']);
-        Sensor::create(['nombre' => 'PH', 'id_rango' => 1,'modelo' => 'Sensor de pH (PH4502-C)', 'unidad_medida' => 'PH']);
-        Sensor::create(['nombre' => 'Turbidez','id_rango' => 1, 'modelo' => 'Sensor de turbidez con salida analógica y digital', 'unidad_medida' => '']);
-        Sensor::create(['nombre' => 'TDS','id_rango' => 1, 'modelo' => 'TDS con sonda sumergible', 'unidad_medida' => 'Unidad de Medida 5']);
+
+        Sensor::create(['nombre' => 'Ultrasonico','id_rango' => 1, 'modelo' => 'Ultrasónico JSN-SR04T-2.0', 'unidad_medida' => 'Cm']);
+        Sensor::create(['nombre' => 'Temperatura', 'id_rango' => 2,'modelo' => 'Temperatura MAX6675 ', 'unidad_medida' => 'C°']);
+        Sensor::create(['nombre' => 'PH', 'id_rango' => 3,'modelo' => 'Sensor de pH (PH4502-C)', 'unidad_medida' => 'PH']);
+        Sensor::create(['nombre' => 'Turbidez','id_rango' => 4, 'modelo' => 'Sensor de turbidez con salida analógica y digital', 'unidad_medida' => 'NTU']);
+        Sensor::create(['nombre' => 'TDS','id_rango' => 5, 'modelo' => 'TDS con sonda sumergible', 'unidad_medida' => 'PPM']);
     }
 
     /**

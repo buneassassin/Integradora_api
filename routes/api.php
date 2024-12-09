@@ -15,17 +15,6 @@ use App\Http\Controllers\ultrasonicoController;
 use App\Http\Controllers\AdafruitController;
 use App\Http\Controllers\ReporteController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -74,10 +63,10 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/gettype', [notificationController::class, 'gettype']);
 
 });
+
 Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 
 Route::post('v1/temperatura', [TemperaturaController::class, 'obtenertemp']);
-
 Route::post('v1/ph', [phController::class, 'obtenerph']);
 Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
 Route::post('v1/tds', [TDSController::class, 'obtenerturbidez']);

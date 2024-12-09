@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Link para el reporte
     Route::get('v1/reporte-datos', [ReporteController::class, 'obtenerDatos']);
     Route::get('v1/reporte-datos-fecha', [ReporteController::class, 'obtenerDatosPorFecha']);
-    Route::post('v1/reporte-datos-sensor', [ReporteController::class, 'obtenerDatosPorSensor']);
+    Route::post('v1/reporte-datos-sensor', [ReporteController::class, 'obtenerHistorialPorSensor']);
 
 });
 

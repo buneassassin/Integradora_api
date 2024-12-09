@@ -25,7 +25,7 @@ class ReporteController extends Controller
                 ->groupBy('sensor.id', 'sensor.nombre') // Agrupamos por ID y nombre del sensor
                 ->orderByDesc('cantidad_lecturas') // Ordenamos por cantidad de lecturas
                 ->get();
-    
+
             // Retornamos los datos
             return response()->json([
                 'status' => 'success',
@@ -39,7 +39,7 @@ class ReporteController extends Controller
             ], 500);
         }
     }
-    
+
     public function obtenerDatosPorFecha()
     {
         try {
@@ -65,10 +65,10 @@ class ReporteController extends Controller
             ], 500);
         }
     }
-    public function obtenerDatosPorSensor(Request $request)
+    public function obtenerHistorialPorSensor(Request $request)
     {
         try {
-            // Validamos que el nombre del sensor sea enviado
+            // Validamos que el nombre del sensor sea enviado en la solicitud
             $validator = Validator::make($request->all(), [
                 'nombre' => 'required|string'
             ]);
@@ -79,25 +79,37 @@ class ReporteController extends Controller
                     'message' => $validator->errors()
                 ], 400);
             }
-    
-            // Obtenemos el nombre del sensor desde el body
+            $id_sensor=0;
+            // Obtenemos el nombre del sensor desde el body de la solicitud
             $nombreSensor = $request->input('nombre');
+                        //vereficamos si el nombre es Ultrasonico
+
+            if ($nombreSensor == 'Ultrasonico') {
+               $id_sensor=1;
+            }
+            if ($nombreSensor == 'Temperatura') {
+                $id_sensor=2;
+             }
+             if ($nombreSensor == 'PH' || $nombreSensor == 'ph' || $nombreSensor == 'Ph') {
+                $id_sensor=3;
+             }
+             if ($nombreSensor == 'Turbidez') {
+                $id_sensor=4;
+             }
+             if ($nombreSensor == 'TDS') {
+                $id_sensor=5;
+             }
+            
+            // Consulta para obtener el historial del sensor filtrado por nombre
+            $datos = DB::table('valor')
+                ->select(
+                    'valor.*'
+                )
+                ->where('valor.id_sensor', '=', $id_sensor)
+                ->orderBy('valor.created_at', 'desc')
+                ->get();
+            
     
-            // Consulta para obtener los datos completos del sensor
-            $query = DB::table('valor')
-            ->join('sensor_tinaco', 'valor.id', '=', 'sensor_tinaco.id_valor')
-            ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
-            ->select(
-                'sensor.nombre',
-                'sensor.id as id_sensor',
-                'valor.value',
-                'valor.created_at'
-            )
-            ->where('sensor.nombre', '=', $nombreSensor)
-            ->orderBy('valor.created_at', 'desc');
-        
-        dd($query->toSql(), $query->getBindings());
-        
             // Verificamos si se encontraron datos
             if ($datos->isEmpty()) {
                 return response()->json([
@@ -105,8 +117,12 @@ class ReporteController extends Controller
                     'message' => 'No se encontraron datos para el sensor especificado.'
                 ], 404);
             }
+            //juntamos los datos con el nombre del sensor
+            foreach ($datos as $dato) {
+                $dato->nombre = $nombreSensor;
+            }
     
-            // Retornamos los datos completos del sensor
+            // Retornamos los datos completos del historial del sensor
             return response()->json([
                 'status' => 'success',
                 'data' => $datos
@@ -120,6 +136,5 @@ class ReporteController extends Controller
             ], 500);
         }
     }
-    
     
 }

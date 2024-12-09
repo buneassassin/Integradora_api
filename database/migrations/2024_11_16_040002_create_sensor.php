@@ -22,19 +22,12 @@ return new class extends Migration
             $table->string('unidad_medida')->nullable();
             $table->timestamps();
         });
-<<<<<<< HEAD
-        Sensor::create(['nombre' => 'Ultrasonico', 'modelo' => 'Ultrasónico JSN-SR04T-2.0', 'unidad_medida' => 'Hz']);
-        Sensor::create(['nombre' => 'Temperatura', 'modelo' => 'Temperatura MAX6675 ', 'unidad_medida' => 'C']);
-        Sensor::create(['nombre' => 'PH', 'modelo' => 'Sensor de pH (PH4502-C)', 'unidad_medida' => 'Unidad de Medida 3']);
-        Sensor::create(['nombre' => 'Turbidez', 'modelo' => 'Sensor de turbidez con salida analógica y digital', 'unidad_medida' => 'Unidad de Medida 4']);
-        Sensor::create(['nombre' => 'TDS', 'modelo' => 'TDS con sonda sumergible', 'unidad_medida' => 'Unidad de Medida 5']);
-=======
-        Sensor::create(['nombre' => 'Turbidez', 'modelo' => 'Modelo 1', 'unidad_medida' => 'Unidad de Medida 1']);
-        Sensor::create(['nombre' => 'TDS', 'modelo' => 'Modelo 2', 'unidad_medida' => 'Unidad de Medida 2']);
-        Sensor::create(['nombre' => 'Temperatura', 'modelo' => 'Modelo 3', 'unidad_medida' => 'Unidad de Medida 3']);
-        Sensor::create(['nombre' => 'Ph', 'modelo' => 'Modelo 4', 'unidad_medida' => 'Unidad de Medida 4']);
-        Sensor::create(['nombre' => 'Ultrasonico', 'modelo' => 'Modelo 5', 'unidad_medida' => 'Unidad de Medida 5']);
->>>>>>> b43a1fc325c45a0e2fdf54cbec7aef2c1c103f80
+        
+        Sensor::create(['nombre' => 'Ultrasonico','id_rango' => 1, 'modelo' => 'Ultrasónico JSN-SR04T-2.0', 'unidad_medida' => 'Hz']);
+        Sensor::create(['nombre' => 'Temperatura', 'id_rango' => 1,'modelo' => 'Temperatura MAX6675 ', 'unidad_medida' => 'C°']);
+        Sensor::create(['nombre' => 'PH', 'id_rango' => 1,'modelo' => 'Sensor de pH (PH4502-C)', 'unidad_medida' => 'PH']);
+        Sensor::create(['nombre' => 'Turbidez','id_rango' => 1, 'modelo' => 'Sensor de turbidez con salida analógica y digital', 'unidad_medida' => '']);
+        Sensor::create(['nombre' => 'TDS','id_rango' => 1, 'modelo' => 'TDS con sonda sumergible', 'unidad_medida' => 'Unidad de Medida 5']);
     }
 
     /**

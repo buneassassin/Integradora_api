@@ -15,8 +15,5 @@ class Valor extends Model
         'value',
     ];
 
-    public function rango()
-    {
-        return $this->belongsTo(Rango::class, 'id_rango');
-    }
+    
 }

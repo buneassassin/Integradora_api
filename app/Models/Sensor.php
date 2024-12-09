@@ -20,4 +20,9 @@ class Sensor extends Model
     {
         return $this->hasMany(SensorTinaco::class, 'sensor_id');
     }
+
+    public function rango()
+    {
+        return $this->belongsTo(Rango::class, 'id_rango');
+    }
 }

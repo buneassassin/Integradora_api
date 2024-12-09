@@ -34,6 +34,7 @@ class Usuario extends Authenticatable
         'foto_perfil',
         'password',
         'is_active',
+        'is_Inactive',
         'remember_token',
     ];
 

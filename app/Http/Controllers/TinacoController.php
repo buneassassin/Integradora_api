@@ -14,7 +14,6 @@ class TinacoController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
-            //'sensor_ids' => 'required|array',  // Asegúrate de que 'sensor_ids' sea un array de IDs de sensores.
         ]);
 
         if ($validator->fails()) {
@@ -30,19 +29,22 @@ class TinacoController extends Controller
         }
         $id_usuario = auth()->user()->id;
 
+        //se crea
         $tinaco = new Tinaco();
         $tinaco->name = $request->name;
         $tinaco->id_usuario = $id_usuario;
         $tinaco->nivel_del_agua = 0;
         $tinaco->save();
 
-        /*       // Vincular cada sensor a ese tinaco
-        foreach ($request->sensor_ids as $sensor_id) {
+        //registros sensor_tinaco
+        //agremaso los 5 sensores por defecto
+        $sensor_ids = [1, 2, 3, 4, 5];
+        foreach ($sensor_ids as $sensor_id) {
             $tinaco_sensor = new SensorTinaco();
             $tinaco_sensor->sensor_id = $sensor_id;
             $tinaco_sensor->tinaco_id = $tinaco->id;
             $tinaco_sensor->save();
-        }*/
+        }
 
         return response()->json([
             'success' => true,
@@ -57,6 +59,7 @@ class TinacoController extends Controller
 
         return response()->json($tinacos, 200);
     }
+
     public function eliminartinaco($id)
     {
         $tinaco = Tinaco::find($id);
@@ -67,6 +70,7 @@ class TinacoController extends Controller
         $tinaco->delete();
         return response()->json(['message' => 'Tinaco eliminado correctamente.'], 200);
     }
+
     public function actualizartinaco(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
@@ -90,6 +94,7 @@ class TinacoController extends Controller
         $tinaco->save();
         return response()->json(['message' => 'Tinaco actualizado correctamente.'], 200);
     }
+    
     public function gettinaco($id)
     {
         $tinaco = Tinaco::find($id);

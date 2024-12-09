@@ -17,7 +17,5 @@ class AdafruitController extends Controller
     {
         $data = $this->adafruitService->getFeedData($feedName);
         return response()->json($data);
-
-
-        
-    }}   
+    }
+}

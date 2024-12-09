@@ -13,17 +13,7 @@ use App\Http\Controllers\turbidezController;
 use App\Http\Controllers\TDSController;
 use App\Http\Controllers\ultrasonicoController;
 use App\Http\Controllers\AdafruitController;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+use App\Http\Controllers\ReporteController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -55,6 +45,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('v1/notifications', [notificationController::class, 'index']);
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
+    // Link para el reporte
+    Route::get('v1/reporte-datos', [ReporteController::class, 'obtenerDatos']);
+    Route::get('v1/reporte-datos-fecha', [ReporteController::class, 'obtenerDatosPorFecha']);
+    Route::post('v1/reporte-datos-sensor', [ReporteController::class, 'obtenerDatosPorSensor']);
+
 });
 
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
@@ -68,11 +63,11 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/gettype', [notificationController::class, 'gettype']);
 
 });
-Route::get('/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 
-Route::post('/temperatura', [TemperaturaController::class, 'obtenertemp']);
+Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 
-Route::get('/ph', [phController::class, 'obtenerph']);
-Route::get('/turbidez', [turbidezController::class, 'obtenerturbidez']);
-Route::get('/tds', [TDSController::class, 'obtenerturbidez']);
-Route::get('/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);
+Route::post('v1/temperatura', [TemperaturaController::class, 'obtenertemp']);
+Route::post('v1/ph', [phController::class, 'obtenerph']);
+Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
+Route::post('v1/tds', [TDSController::class, 'obtenerturbidez']);
+Route::post('v1/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);

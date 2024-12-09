@@ -43,7 +43,7 @@ class IsInactiveMiddleware
     }
 
     // Verificamos si el usuario está desactivado
-    if ($user->is_inactive==0) {
+    if ($user->is_Inactive==0) {
         // Si el usuario está desactivado, devolvemos un error indicando acceso denegado
         return response()->json(['message' => 'Acceso denegado, el usuario fue desactivado.'], 403);
     }

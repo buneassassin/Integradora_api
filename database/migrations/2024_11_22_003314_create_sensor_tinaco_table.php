@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sensor_id')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('tinaco_id')->constrained('tinaco')->onDelete('cascade');
+            $table->foreignId('id_valor')->nullable()->constrained('valor')->onDelete('set null');
             $table->timestamps();
         });
     }

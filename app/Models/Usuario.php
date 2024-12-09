@@ -34,13 +34,13 @@ class Usuario extends Authenticatable
         'foto_perfil',
         'password',
         'is_active',
+        'is_Inactive',
         'remember_token',
     ];
 
     public function persona()
     {
         return $this->belongsTo(Persona::class, 'id_persona');
-        // 'id_persona' es la clave foránea en `usuario`
     }
 
     public function tinacos()

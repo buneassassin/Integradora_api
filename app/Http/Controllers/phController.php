@@ -7,6 +7,7 @@ use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Rango;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\Tinaco;
 use App\Models\SensorTinaco;
@@ -25,10 +26,21 @@ class phController extends Controller
    
     public function obtenerph(Request $request)
     {
+        //Validamos
+        $validator = Validator::make($request->all(), [
+            'tinaco_id' => 'required|numeric',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'mensaje' => $validator->errors()
+            ], 400);
+        }
+
         $usuario = Auth::user();
         $tinacoId = $request->input('tinaco_id');
+       
         $tinaco = Tinaco::find($tinacoId);
-
+        
         $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
         ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
         ->where('sensor.nombre', 'Ph') 

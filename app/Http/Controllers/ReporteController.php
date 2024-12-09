@@ -84,19 +84,20 @@ class ReporteController extends Controller
             $nombreSensor = $request->input('nombre');
     
             // Consulta para obtener los datos completos del sensor
-            $datos = DB::table('valor')
-                ->join('sensor_tinaco', 'valor.id', '=', 'sensor_tinaco.id_valor') // Relación entre valor y sensor_tinaco
-                ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id') // Relación entre sensor_tinaco y sensor
-                ->select(
-                    'sensor.nombre',
-                    'sensor.id as id_sensor',
-                    'valor.value',
-                    'valor.created_at'
-                )
-                ->where('sensor.nombre', '=', $nombreSensor) // Filtro por nombre del sensor
-                ->orderBy('valor.created_at', 'desc') // Ordenamos en orden descendente
-                ->get();
-    
+            $query = DB::table('valor')
+            ->join('sensor_tinaco', 'valor.id', '=', 'sensor_tinaco.id_valor')
+            ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+            ->select(
+                'sensor.nombre',
+                'sensor.id as id_sensor',
+                'valor.value',
+                'valor.created_at'
+            )
+            ->where('sensor.nombre', '=', $nombreSensor)
+            ->orderBy('valor.created_at', 'desc');
+        
+        dd($query->toSql(), $query->getBindings());
+        
             // Verificamos si se encontraron datos
             if ($datos->isEmpty()) {
                 return response()->json([

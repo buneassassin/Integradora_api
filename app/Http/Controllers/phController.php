@@ -174,6 +174,8 @@ class phController extends Controller
 
             $Valor = Valor::create([
                 'value' => $valor,
+                'id_sensor'=> 3
+
             ]);
            // $sensor->save();
            $sensorTinaco->id_valor = $Valor->id;

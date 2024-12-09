@@ -12,6 +12,7 @@ class Valor extends Model
     protected $table = 'valor';
     protected $fillable = [
         'value',
+        'id_sensor'
     ];
 
     

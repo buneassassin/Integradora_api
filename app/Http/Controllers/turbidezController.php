@@ -153,6 +153,8 @@ public function obtenerturbidez( Request $request)
         
         $Valor = Valor::create([
             'value' => $valor,
+            'id_sensor'=> 4
+
         ]);
        // $sensor->save();
        $sensorTinaco->id_valor = $Valor->id;

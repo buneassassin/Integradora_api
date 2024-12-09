@@ -11,7 +11,7 @@ class ImagenController extends Controller
     {
         // Validar la imagen
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Máximo 2MB
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp,avif,pdf|max:2048', 
         ]);
 
         // Obtener el archivo de la imagen del request

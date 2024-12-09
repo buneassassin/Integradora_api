@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
+
         Sensor::create(['nombre' => 'Ultrasonico','id_rango' => 1, 'modelo' => 'Ultrasónico JSN-SR04T-2.0', 'unidad_medida' => 'Cm']);
         Sensor::create(['nombre' => 'Temperatura', 'id_rango' => 2,'modelo' => 'Temperatura MAX6675 ', 'unidad_medida' => 'C°']);
         Sensor::create(['nombre' => 'PH', 'id_rango' => 3,'modelo' => 'Sensor de pH (PH4502-C)', 'unidad_medida' => 'PH']);

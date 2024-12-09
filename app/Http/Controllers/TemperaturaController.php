@@ -148,9 +148,12 @@ class TemperaturaController extends Controller
 
             $Valor = Valor::create([
                 'value' => $valor,
+                'id_sensor'=> 2
+
             ]);
 
             $sensorTinaco->id_valor = $Valor->id;
+
             $Valor->save();
 
             $sensorTinaco->save();

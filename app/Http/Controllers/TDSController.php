@@ -128,13 +128,13 @@ public function obtenerturbidez(Request $request)
         
         
         //por si no habia
-        $sensor = Sensor::firstOrCreate([
+       /*  $sensor = Sensor::firstOrCreate([
             'nombre' => 'TDS',
             "modelo" => "TDS con sonda sumergible",
             "unidad_medida" => "ppm",
         
         
-        ]);
+        ]); */
         $rango = Rango::firstOrCreate([
             'rango_min' => 0,
             'rango_max' => 2000,
@@ -148,7 +148,7 @@ public function obtenerturbidez(Request $request)
             'unidad' => 'ppm',
         ]);
 
-        $sensor->save();
+       // $sensor->save();
         $Valor->save();
     }
 }

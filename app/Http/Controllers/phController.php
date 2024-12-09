@@ -147,13 +147,13 @@ class phController extends Controller
             
             
             //por si no habia
-            $sensor = Sensor::firstOrCreate([
+           /*  $sensor = Sensor::firstOrCreate([
                 'nombre' => 'Ph',
                 "modelo" => "PH4502-C",
                 "unidad_medida" => "ph",
             
             
-            ]);
+            ]); */
             $rango = Rango::firstOrCreate([
                 'rango_min' => 0,
                 'rango_max' => 14,
@@ -167,7 +167,7 @@ class phController extends Controller
                 'unidad' => 'ph',
             ]);
 
-            $sensor->save();
+            //$sensor->save();
             $Valor->save();
         }
 }

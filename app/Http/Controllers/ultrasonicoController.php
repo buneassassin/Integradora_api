@@ -121,13 +121,13 @@ class ultrasonicoController extends Controller
             
             
             //por si no habia
-            $sensor = Sensor::firstOrCreate([
+            /* $sensor = Sensor::firstOrCreate([
                 'nombre' => 'Ultrasonico',
                 "modelo" => "JSN-SR04T-2.0",
                 "unidad_medida" => "cm",
             
             
-            ]);
+            ]); */
             $rango = Rango::firstOrCreate([
                 'rango_min' => 20,
                 'rango_max' => 600,
@@ -141,6 +141,6 @@ class ultrasonicoController extends Controller
                 'unidad' => 'cm',
             ]);
     
-            $sensor->save();
+           // $sensor->save();
             $Valor->save();
         }}

@@ -12,31 +12,34 @@ class ReporteController extends Controller
     public function obtenerDatos()
     {
         try {
-            // Consulta para obtener datos del sensor con nombres
+            // Consulta para obtener datos de los sensores asociados a tinacos
             $datos = DB::table('valor')
-                ->join('sensor', 'valor.id_sensor', '=', 'sensor.id') // Unir tablas
+                ->join('sensor_tinaco', 'valor.id', '=', 'sensor_tinaco.id_valor') // Relación entre valores y sensor_tinaco
+                ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id') // Relación entre sensor_tinaco y sensor
                 ->select(
                     'sensor.nombre',
-                    'valor.id_sensor',
+                    'sensor.id as id_sensor',
                     DB::raw('AVG(valor.value) as promedio_valor'),
                     DB::raw('COUNT(valor.value) as cantidad_lecturas')
                 )
-                ->groupBy('valor.id_sensor', 'sensor.nombre') // Agrupar por id_sensor y nombre_sensor
-                ->orderByDesc('cantidad_lecturas') // Ordenar por cantidad de lecturas
+                ->groupBy('sensor.id', 'sensor.nombre') // Agrupamos por ID y nombre del sensor
+                ->orderByDesc('cantidad_lecturas') // Ordenamos por cantidad de lecturas
                 ->get();
-
-            // Formato de respuesta
+    
+            // Retornamos los datos
             return response()->json([
                 'status' => 'success',
                 'data' => $datos
             ], 200);
         } catch (\Exception $e) {
+            // Manejo de errores
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
     }
+    
     public function obtenerDatosPorFecha()
     {
         try {
@@ -81,10 +84,16 @@ class ReporteController extends Controller
             $nombreSensor = $request->input('nombre');
     
             // Consulta para obtener los datos completos del sensor
-            $datos = DB::table('valor') // Asumiendo que 'valor' es la tabla donde están los valores
-                ->join('sensor', 'valor.id_sensor', '=', 'sensor.id')
-                ->select('sensor.nombre', 'sensor.id as id_sensor', 'valor.value', 'valor.created_at')
-                ->where('sensor.nombre', '=', $nombreSensor)
+            $datos = DB::table('valor')
+                ->join('sensor_tinaco', 'valor.id', '=', 'sensor_tinaco.id_valor') // Relación entre valor y sensor_tinaco
+                ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id') // Relación entre sensor_tinaco y sensor
+                ->select(
+                    'sensor.nombre',
+                    'sensor.id as id_sensor',
+                    'valor.value',
+                    'valor.created_at'
+                )
+                ->where('sensor.nombre', '=', $nombreSensor) // Filtro por nombre del sensor
                 ->orderBy('valor.created_at', 'desc') // Ordenamos en orden descendente
                 ->get();
     
@@ -110,5 +119,6 @@ class ReporteController extends Controller
             ], 500);
         }
     }
+    
     
 }

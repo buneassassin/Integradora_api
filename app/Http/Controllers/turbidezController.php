@@ -137,13 +137,13 @@ public function obtenerturbidez( Request $request)
         
         
         //por si no habia
-        $sensor = Sensor::firstOrCreate([
+      /*   $sensor = Sensor::firstOrCreate([
             'nombre' => 'Turbidez',
             "modelo" => "Sensor de turbidez con salida analógica y digital",
             "unidad_medida" => "ms",
         
         
-        ]);
+        ]); */
         $rango = Rango::firstOrCreate([
             'rango_min' => 0,
             'rango_max' => 1000,
@@ -157,7 +157,7 @@ public function obtenerturbidez( Request $request)
             'unidad' => 'ph',
         ]);
 
-        $sensor->save();
+      //  $sensor->save();
         $Valor->save();
     }
 }

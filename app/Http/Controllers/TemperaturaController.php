@@ -130,13 +130,13 @@ class TemperaturaController extends Controller
             $valor = trim($valor);
             $valor = is_numeric($valor) ? (float) $valor : null;
             //por si no habia
-            $sensor = Sensor::firstOrCreate([
+          /*   $sensor = Sensor::firstOrCreate([
                 'nombre' => 'Temperatura',
                 "modelo" => "MAX6675",
                 "unidad_medida" => "°C",
             
             
-            ]);
+            ]); */
             $rango = Rango::firstOrCreate([
                 'rango_min' => -200,
                 'rango_max' => 700,
@@ -150,7 +150,7 @@ class TemperaturaController extends Controller
                 'unidad' => '°C',
             ]);
 
-            $sensor->save();
+           // $sensor->save();
             $Valor->save();
         }
 }

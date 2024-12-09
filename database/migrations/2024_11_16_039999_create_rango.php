@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Rango;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,8 @@ return new class extends Migration
             $table->decimal('rango_min', 10, 2);
             $table->decimal('rango_max', 10, 2);
             $table->timestamps();
+
+            Rango::create(['rango_min' => 1, 'rango_max' => 5]);
         });
     }
 

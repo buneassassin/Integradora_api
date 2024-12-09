@@ -12,8 +12,8 @@ class AdafruitService
 
     public function __construct()
     {
-        $this->username = env('ADAFRUIT_USERNAME');
-        $this->apiKey = env('ADAFRUIT_API_KEY');
+        $this->username = 'Treckersillo';
+        $this->apiKey = 'aio_yjbO36VNKQgCA5W3q8OncHNrc4nR';
         
         $this->baseUrl = "https://io.adafruit.com/api/v2/{$this->username}/";
     }

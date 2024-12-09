@@ -52,7 +52,7 @@ class phController extends Controller
         $sensor = $sensorTinaco->sensor;
 
         $data = $this->adafruitService->getFeedData("ph");
-        $this->guardarDatos($data, $sensor, $usuario);
+        $this->guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario);
 
         $mensaje = $this->significadoDatos($data);
 
@@ -137,7 +137,7 @@ class phController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-            public function guardarDatos($data, $sensor, $usuario)
+            public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
             {
             $data = is_string($data) ? json_decode($data) : $data;
             
@@ -166,20 +166,19 @@ class phController extends Controller
             
             
             ]); */
-            $rango = Rango::firstOrCreate([
+            /* $rango = Rango::firstOrCreate([
                 'rango_min' => 0,
                 'rango_max' => 14,
                
-            ]);
+            ]); */
 
             $Valor = Valor::create([
-                'id_sensor' => $sensor->id,
-                "id_rango" => $rango->id,
-                'value' => $phfinal,
-                'unidad' => 'ph',
+                'value' => $valor,
             ]);
-
-            //$sensor->save();
-            $Valor->save();
+           // $sensor->save();
+           $sensorTinaco->id_valor = $Valor->id;
+           $Valor->save();
+    
+           $sensorTinaco->save();
         }
 }

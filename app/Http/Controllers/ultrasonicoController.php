@@ -40,7 +40,7 @@ class ultrasonicoController extends Controller
         $sensor = $sensorTinaco->sensor;
 
         $data = $this->adafruitService->getFeedData("ultrasonico");
-        $this->guardarDatos($data, $sensor, $usuario);
+        $this->guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario);
     
         $mensaje = $this->significadoDatos($data);
     
@@ -102,7 +102,7 @@ class ultrasonicoController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-        public function guardarDatos($data, $sensor, $usuario)
+        public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
         {
             $data = is_string($data) ? json_decode($data) : $data;
             
@@ -128,19 +128,18 @@ class ultrasonicoController extends Controller
             
             
             ]); */
-            $rango = Rango::firstOrCreate([
+          /*   $rango = Rango::firstOrCreate([
                 'rango_min' => 20,
                 'rango_max' => 600,
                
-            ]);
+            ]); */
     
             $Valor = Valor::create([
-                'id_sensor' => $sensor->id,
-                "id_rango" => $rango->id,
                 'value' => $valor,
-                'unidad' => 'cm',
             ]);
-    
            // $sensor->save();
-            $Valor->save();
+           $sensorTinaco->id_valor = $Valor->id;
+           $Valor->save();
+    
+           $sensorTinaco->save();
         }}

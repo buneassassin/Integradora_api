@@ -25,7 +25,7 @@ return new class extends Migration
         });
 
         Rango::create(['rango_min' => 0.00, 'rango_max' => 200.00]);
-        Rango::create(['rango_min' => 15.00, 'rango_max' => 50.00]);
+        Rango::create(['rango_min' => -200.00, 'rango_max' => 700.00]);
         Rango::create(['rango_min' => 0.00, 'rango_max' => 14.00]);
         Rango::create(['rango_min' => 0.00, 'rango_max' => 1000.00]);
         Rango::create(['rango_min' => 0.00, 'rango_max' => 2000.00]);

@@ -73,5 +73,6 @@ Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
 Route::post('v1/tds', [TDSController::class, 'obtenerturbidez']);
 Route::post('v1/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);
 
+//bomba
 Route::post('v1/encenderbomba', [encenderbombaController::class, 'encenderbomba']);
 Route::post('v1/apagarbomba', [encenderbombaController::class, 'apagarbomba']);

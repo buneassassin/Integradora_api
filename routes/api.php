@@ -14,6 +14,7 @@ use App\Http\Controllers\TDSController;
 use App\Http\Controllers\ultrasonicoController;
 use App\Http\Controllers\AdafruitController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\encenderbombaController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -71,3 +72,6 @@ Route::post('v1/ph', [phController::class, 'obtenerph']);
 Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
 Route::post('v1/tds', [TDSController::class, 'obtenerturbidez']);
 Route::post('v1/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez']);
+
+Route::post('v1/encenderbomba', [encenderbombaController::class, 'encenderbomba']);
+Route::post('v1/apagarbomba', [encenderbombaController::class, 'apagarbomba']);

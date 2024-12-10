@@ -17,9 +17,25 @@ class AdafruitService
         
         $this->baseUrl = "https://io.adafruit.com/api/v2/{$this->username}/";
     }
+    public function enviardatos($feedName, $valor)
+    {
+        $client = new \GuzzleHttp\Client();
+        $response = Http::withHeaders([
+            'X-AIO-Key' => $this->apiKey, 
+            'Content-Type' => 'application/json',
+        ])->post("{$this->baseUrl}feeds/{$feedName}/data", [
+            'value' => $valor, 
+        ]);
+        if ($response->successful()) {
+            return "Dato enviado correctamente al feed {$feedName}.";
+        } else {
+            return "Error al enviar el dato: " . $response->body();
+        }
+    }
 
     public function getFeedData($feedName)
     {
+
         $response = Http::withHeaders([
             'X-AIO-Key' => $this->apiKey
         ])->get("{$this->baseUrl}feeds/{$feedName}");

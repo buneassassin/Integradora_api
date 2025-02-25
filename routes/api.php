@@ -19,6 +19,7 @@ use App\Http\Controllers\encenderbombaController;
 Route::middleware('auth:sanctum')->get('v1/user', function (Request $request) {
     return $request->user();
 });
+
 // Link para el registro
 Route::post('v1/register', [autenticadorController::class, 'register']);
 Route::get('v1/activate/{user}', [autenticadorController::class, 'activate'])->name('activate'); //->middleware('signed');

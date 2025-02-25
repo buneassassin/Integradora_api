@@ -6,13 +6,8 @@ use Illuminate\Http\Request;
 use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
-use App\Models\Rango;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Log;
-
-
-
-use App\Models\SensorTinaco;
 use Illuminate\Support\Facades\Auth;
 class TemperaturaController extends Controller
 {
@@ -31,20 +26,20 @@ class TemperaturaController extends Controller
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
-        $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
-        ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+        $Valor = Valor::where('tinaco_id', $tinaco->id)
+        ->join('sensor', 'valor.sensor_id', '=', 'sensor.id')
         ->where('sensor.nombre', 'Temperatura') 
         ->first();
 
-        if (!$sensorTinaco) {
+        if (!$Valor) {
             return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
         }
-        $sensor = $sensorTinaco->sensor;
+        $sensor = $Valor->sensor;
         $data = $this->adafruitService->getFeedData("temperatura");
 
         $mensaje = $this->significadoDatos($data);
 
-        $guardarDatos = $this->guardarDatos($sensorTinaco, $tinaco,$data, $sensor, $usuario);
+        $guardarDatos = $this->guardarDatos($Valor, $tinaco,$data, $sensor, $usuario);
 
         return response()->json(['mensaje' => $mensaje]);
 
@@ -100,7 +95,7 @@ class TemperaturaController extends Controller
             }
       
     
-            return "Temperatura fuera de rango: {$valor}°C";
+            return "Temperatura fuera de Sensor: {$valor}°C";
         }
             
 
@@ -115,7 +110,7 @@ class TemperaturaController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-            public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
+            public function guardarDatos($Valor,$tinaco,$data, $sensor, $usuario)
           {
             $data = is_string($data) ? json_decode($data) : $data;
 
@@ -140,9 +135,9 @@ class TemperaturaController extends Controller
             
             
             ]); */
-            /* $rango = Rango::firstOrCreate([
-                'rango_min' => -200,
-                'rango_max' => 700,
+            /* $Sensor = Sensor::firstOrCreate([
+                'Sensor_min' => -200,
+                'Sensor_max' => 700,
                
             ]); */
 
@@ -152,11 +147,11 @@ class TemperaturaController extends Controller
 
             ]);
 
-            $sensorTinaco->id_valor = $Valor->id;
+            $Valor->id_valor = $Valor->id;
 
             $Valor->save();
 
-            $sensorTinaco->save();
+            $Valor->save();
             
             
 

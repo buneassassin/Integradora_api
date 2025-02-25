@@ -6,11 +6,9 @@ use Illuminate\Http\Request;
 use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
-use App\Models\Rango;
 use Illuminate\Support\Facades\Validator;
 
 use App\Models\Tinaco;
-use App\Models\SensorTinaco;
 use Illuminate\Support\Facades\Auth;
 
 class phController extends Controller
@@ -41,18 +39,18 @@ class phController extends Controller
        
         $tinaco = Tinaco::find($tinacoId);
         
-        $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
-        ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
-        ->where('sensor.nombre', 'Ph') 
+        $Valor = Valor::where('tinaco_id', $tinaco->id)
+        ->join('sensor', 'valor.sensor_id', '=', 'sensor.id')
+        ->where('sensor.nombre', 'Ph')
         ->first();
 
-        if (!$sensorTinaco) {
+        if (!$Valor) {
             return response()->json(['mensaje' => 'Sensor de ph no encontrado para el tinaco especificado'], 404);
         }
-        $sensor = $sensorTinaco->sensor;
+        $sensor = $Valor->sensor;
 
         $data = $this->adafruitService->getFeedData("ph");
-        $this->guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario);
+        $this->guardarDatos($Valor,$tinaco,$data, $sensor, $usuario);
 
         $mensaje = $this->significadoDatos($data);
 
@@ -122,7 +120,7 @@ class phController extends Controller
 
       
     
-            return "ph fuera de rango: {$valor}°C";
+            return "ph fuera de Sensor: {$valor}°C";
         }
             
 
@@ -137,7 +135,7 @@ class phController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-            public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
+            public function guardarDatos($Valor,$tinaco,$data, $sensor, $usuario)
             {
             $data = is_string($data) ? json_decode($data) : $data;
             
@@ -166,9 +164,9 @@ class phController extends Controller
             
             
             ]); */
-            /* $rango = Rango::firstOrCreate([
-                'rango_min' => 0,
-                'rango_max' => 14,
+            /* $Sensor = Sensor::firstOrCreate([
+                'Sensor_min' => 0,
+                'Sensor_max' => 14,
                
             ]); */
 
@@ -178,9 +176,9 @@ class phController extends Controller
 
             ]);
            // $sensor->save();
-           $sensorTinaco->id_valor = $Valor->id;
+           $Valor->id_valor = $Valor->id;
            $Valor->save();
     
-           $sensorTinaco->save();
+           $Valor->save();
         }
 }

@@ -6,11 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
-use App\Models\Rango;
-
-
 use App\Models\Tinaco;
-use App\Models\SensorTinaco;
 use Illuminate\Support\Facades\Auth;
 
 class ultrasonicoController extends Controller
@@ -29,18 +25,18 @@ class ultrasonicoController extends Controller
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
-        $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
-        ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+        $Valor = Valor::where('tinaco_id', $tinaco->id)
+        ->join('sensor', 'sensor.sensor_id', '=', 'sensor.id')
         ->where('sensor.nombre', 'Ultrasonico') 
         ->first();
 
-        if (!$sensorTinaco) {
+        if (!$Valor) {
             return response()->json(['mensaje' => 'Sensor ultrasonico no encontrado para el tinaco especificado'], 404);
         }
-        $sensor = $sensorTinaco->sensor;
+        $sensor = $Valor->sensor;
 
         $data = $this->adafruitService->getFeedData("ultrasonico");
-        $this->guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario);
+        $this->guardarDatos($Valor,$tinaco,$data, $sensor, $usuario);
     
         $mensaje = $this->significadoDatos($data);
     
@@ -87,7 +83,7 @@ class ultrasonicoController extends Controller
              }
       
     
-            return "valor fuera de rango: {$valor}";
+            return "valor fuera de Sensor: {$valor}";
         }
             
     
@@ -102,7 +98,7 @@ class ultrasonicoController extends Controller
                  //   return "Temperatura baja";
                     //break;
             
-        public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
+        public function guardarDatos($Valor,$tinaco,$data, $sensor, $usuario)
         {
             $data = is_string($data) ? json_decode($data) : $data;
             
@@ -128,9 +124,9 @@ class ultrasonicoController extends Controller
             
             
             ]); */
-          /*   $rango = Rango::firstOrCreate([
-                'rango_min' => 20,
-                'rango_max' => 600,
+          /*   $Sensor = Sensor::firstOrCreate([
+                'Sensor_min' => 20,
+                'Sensor_max' => 600,
                
             ]); */
     
@@ -139,8 +135,8 @@ class ultrasonicoController extends Controller
                 'id_sensor'=> 1
             ]);
            // $sensor->save();
-           $sensorTinaco->id_valor = $Valor->id;
+           $Valor->id_valor = $Valor->id;
            $Valor->save();
     
-           $sensorTinaco->save();
+           $Valor->save();
         }}

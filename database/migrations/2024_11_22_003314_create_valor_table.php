@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sensor_tinaco', function (Blueprint $table) {
+        Schema::create('valor', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sensor_id')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('tinaco_id')->constrained('tinaco')->onDelete('cascade');
-            $table->foreignId('id_valor')->nullable()->constrained('valor')->onDelete('set null');
+            $table->decimal('value', 10, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sensor_tinaco');
+        Schema::dropIfExists('valor');
     }
 };

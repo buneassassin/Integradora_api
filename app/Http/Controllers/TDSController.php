@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\AdafruitService;
-use App\Models\Valor;
 use App\Models\Sensor;
-use App\Models\Rango;
 
 
 use App\Models\Tinaco;
-use App\Models\SensorTinaco;
+use App\Models\Valor;
 use Illuminate\Support\Facades\Auth;
 class TDSController extends Controller
 {
@@ -28,18 +26,18 @@ public function obtenerturbidez(Request $request)
     $tinacoId = $request->input('tinaco_id');
     $tinaco = Tinaco::find($tinacoId);
 
-    $sensorTinaco = SensorTinaco::where('tinaco_id', $tinaco->id)
-    ->join('sensor', 'sensor_tinaco.sensor_id', '=', 'sensor.id')
+    $Valor = Valor::where('tinaco_id', $tinaco->id)
+    ->join('sensor', 'valor.sensor_id', '=', 'sensor.id')
     ->where('sensor.nombre', 'TDS') 
     ->first();
 
-    if (!$sensorTinaco) {
+    if (!$Valor) {
         return response()->json(['mensaje' => 'Sensor de TDS no encontrado para el tinaco especificado'], 404);
     }
-    $sensor = $sensorTinaco->sensor;
+    $sensor = $Valor->sensor;
 
     $data = $this->adafruitService->getFeedData("tds");
-    $this->guardarDatos($sensorTinaco, $tinaco,$data, $sensor, $usuario);
+    $this->guardarDatos($Valor, $tinaco,$data, $sensor, $usuario);
 
     $mensaje = $this->significadoDatos($data);
 
@@ -94,7 +92,7 @@ public function obtenerturbidez(Request $request)
          }
   
 
-        return "turbidez fuera de rango: {$valor}";
+        return "turbidez fuera de Sensor: {$valor}";
     }
         
 
@@ -109,7 +107,7 @@ public function obtenerturbidez(Request $request)
              //   return "Temperatura baja";
                 //break;
         
-                public function guardarDatos($sensorTinaco,$tinaco,$data, $sensor, $usuario)
+                public function guardarDatos($Valor,$tinaco,$data, $sensor, $usuario)
                 {
         $data = is_string($data) ? json_decode($data) : $data;
         
@@ -135,9 +133,9 @@ public function obtenerturbidez(Request $request)
         
         
         ]); */
-       /*  $rango = Rango::firstOrCreate([
-            'rango_min' => 0,
-            'rango_max' => 2000,
+       /*  $Sensor = Sensor::firstOrCreate([
+            'Sensor_min' => 0,
+            'Sensor_max' => 2000,
            
         ]); */
 
@@ -147,10 +145,10 @@ public function obtenerturbidez(Request $request)
 
         ]);
        // $sensor->save();
-       $sensorTinaco->id_valor = $Valor->id;
+       $Valor->id_valor = $Valor->id;
        
        $Valor->save();
 
-       $sensorTinaco->save();
+       $Valor->save();
     }
 }

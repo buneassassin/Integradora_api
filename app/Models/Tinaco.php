@@ -21,9 +21,9 @@ class Tinaco extends Model
         return $this->belongsTo(Usuario::class, 'id_usuario');
     }
 
-    public function sensores()
+    public function valor()
     {
-        return $this->hasMany(SensorTinaco::class, 'tinaco_id');
+        return $this->hasMany(Valor::class, 'tinaco_id');
     }
 
     

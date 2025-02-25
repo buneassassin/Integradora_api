@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tinaco;
-use App\Models\SensorTinaco;
+use App\Models\Valor;
 use Illuminate\Support\Facades\Validator;
 
 class TinacoController extends Controller
@@ -36,11 +36,11 @@ class TinacoController extends Controller
         $tinaco->nivel_del_agua = 0;
         $tinaco->save();
 
-        //registros sensor_tinaco
+        //registros valor
         //agremaso los 5 sensores por defecto
         $sensor_ids = [1, 2, 3, 4, 5];
         foreach ($sensor_ids as $sensor_id) {
-            $tinaco_sensor = new SensorTinaco();
+            $tinaco_sensor = new Valor();
             $tinaco_sensor->sensor_id = $sensor_id;
             $tinaco_sensor->tinaco_id = $tinaco->id;
             $tinaco_sensor->save();

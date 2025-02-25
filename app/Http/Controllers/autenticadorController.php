@@ -267,6 +267,7 @@ class autenticadorController extends Controller
             'user' => [
                 'id' => $user->id,
                 'email' => $user->email,
+                'rol' => $user->rol,
                 'usuario_nom' => $user->usuario_nom,
                 'foto_perfil' => $user->foto_perfil,
                 'persona' => [

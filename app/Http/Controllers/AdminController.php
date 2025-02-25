@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Usuario;
+use App\Models\Tinaco;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -42,8 +43,6 @@ class AdminController extends Controller
                     'rol' => $usuario->rol,
                     'is_active' => $usuario->is_active,
                     'is_Inactive'=> $usuario->is_Inactive,
-                    'fecha_registro' => $usuario->created_at->toDateTimeString(),
-                    'tiempo_registrado' => $usuario->created_at->diffForHumans(),
                     'numero_tinacos' => $usuario->tinacos->count(),
                     'tinacos' => $usuario->tinacos,
                     'persona' => $usuario->persona,
@@ -131,6 +130,15 @@ class AdminController extends Controller
         // Usuarios inactivos (total - activos)
         $inactiveUsers = $totalUsers - $activeUsers;
 
+        // usuarios admin 
+        $adminUsers = Usuario::where('rol', 'Admin')->count();
+        // usuarios user y guest
+        $userUsers = Usuario::where('rol', 'user')->count();
+        $guestUsers = Usuario::where('rol', 'Guest')->count();
+        $userUsers = $userUsers + $guestUsers;
+        
+       
+
         // Datos para el gráfico (usuarios registrados por mes en el último año)
         $usersByMonth = Usuario::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
             ->whereYear('created_at', '=', Carbon::now()->year)
@@ -144,6 +152,21 @@ class AdminController extends Controller
             'activeUsers' => $activeUsers,
             'inactiveUsers' => $inactiveUsers,
             'usersByMonth' => $usersByMonth,
+            'adminUsers' => $adminUsers,
+            'userUsers' => $userUsers,
+        ]);
+    }
+    public function getTinacoStatistics()
+    {
+        $totalTinacos = Tinaco::count();
+        $tinacosByMonth = Tinaco::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', '=', Carbon::now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        return response()->json([
+            'totalTinacos' => $totalTinacos,
+            'tinacosByMonth' => $tinacosByMonth,
         ]);
     }
     public function obtenerRol()

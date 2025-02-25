@@ -16,7 +16,7 @@ use App\Http\Controllers\AdafruitController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\encenderbombaController;
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('v1/user', function (Request $request) {
     return $request->user();
 });
 // Link para el registro
@@ -59,6 +59,8 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::post('v1/desactivarUsuario', [AdminController::class, 'desactivarUsuario']);
     Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);
     Route::get('v1/getUserStatistics', [AdminController::class, 'getUserStatistics']);
+    Route::get('v1/getTinacoStatistics', [AdminController::class, 'getTinacoStatistics']);
+
     Route::get('v1/obtenerRol', [AdminController::class, 'obtenerRol']);
     Route::post('v1/EnviarNotificacionesGeneral', [notificationController::class, 'EnviarNotificacionesGeneral']);
     Route::get('v1/gettype', [notificationController::class, 'gettype']);

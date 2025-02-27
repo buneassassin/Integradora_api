@@ -173,8 +173,9 @@ class autenticadorController extends Controller
     public function updatePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8'
+            'password' => 'required|string|min:8',	
+            'password_new' => 'required|string|min:8|',
+            'password_confirmation' => 'required|string|min:8|same:password_new',
         ]);
 
         if ($validator->fails()) {
@@ -182,15 +183,23 @@ class autenticadorController extends Controller
                 'message' => $validator->errors()
             ], 400);
         }
+        //validar si el password es correcto
+        if (!password_verify($request->password, $request->user()->password)) {
+            return response()->json([
+                'message' => 'Contraseña incorrecta'    
+
+            ], 400);
+        }
+
         //validar si los passwords son iguales
-        if ($request->password != $request->password_confirmation) {
+        if ($request->password_new != $request->password_confirmation) {
             return response()->json([
                 'message' => 'Contraseñas no coinciden'
             ], 400);
         }
 
         $user = $request->user();
-        $user->password = bcrypt($request->password);
+        $user->password = bcrypt($request->password_new);
         $user->save();
 
         return response()->json(['message' => 'Password updated successfully.'], 200);

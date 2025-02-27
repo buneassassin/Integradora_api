@@ -84,6 +84,38 @@ class AdminController extends Controller
 
         return response()->json(['message' => 'Usuario desactivado correctamente.'], 200);
     }
+    public function activarUsuario(Request $request)
+    {
+        // Validación: solo requerir el formato correcto de email
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => $validator->errors()
+            ], 400);
+        }
+
+        // Buscar el usuario por email
+        $user = Usuario::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+        // Verificar si el usuario ya esta activado
+        if ($user->is_Inactive == true) {
+            return response()->json(['message' => 'El usuario ya esta activado.'], 400);
+        }
+
+        // Activar al usuario (cambiar el campo `is_active`)
+        $user->is_Inactive = true;  // Asumo que quieres desactivar el usuario, se cambió a `true`
+        $user->save();
+
+        return response()->json(['message' => 'Usuario activado correctamente.'], 200);
+     
+    }
 
     //cambir el rol
     public function cambiarRol(Request $request)

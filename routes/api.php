@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/admin-action', [AdminController::class, 'performAction']);
     Route::get('v1/usuariosConTinacos', [AdminController::class, 'obtenerUsuariosConTinacos']);
     Route::post('v1/desactivarUsuario', [AdminController::class, 'desactivarUsuario']);
+    Route::post('v1/activarUsuario', [AdminController::class, 'activarUsuario']);
     Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);
     Route::get('v1/getUserStatistics', [AdminController::class, 'getUserStatistics']);
     Route::get('v1/getTinacoStatistics', [AdminController::class, 'getTinacoStatistics']);

@@ -152,15 +152,13 @@ class AdminController extends Controller
     {
         // Total de usuarios
         $totalUsers = Usuario::count();
+        
 
         // Usuarios activos basados en los tokens válidos (últimos 30 días)
-        $activeUsers = DB::table('personal_access_tokens')
-            ->where('last_used_at', '>=', Carbon::now()->subDays(30))
-            ->distinct('tokenable_id') // Evita duplicar usuarios
-            ->count('tokenable_id');
+        $bannedUsers = Usuario::where('is_Inactive', false)->count();
 
-        // Usuarios inactivos (total - activos)
-        $inactiveUsers = $totalUsers - $activeUsers;
+        // Total de usuarios baniados 
+        $activeUsers= Usuario::where('is_Inactive', true)->count();
 
         // usuarios admin 
         $adminUsers = Usuario::where('rol', 'Admin')->count();
@@ -182,7 +180,7 @@ class AdminController extends Controller
         return response()->json([
             'totalUsers' => $totalUsers,
             'activeUsers' => $activeUsers,
-            'inactiveUsers' => $inactiveUsers,
+            'inactiveUsers' => $bannedUsers,
             'usersByMonth' => $usersByMonth,
             'adminUsers' => $adminUsers,
             'userUsers' => $userUsers,

@@ -45,6 +45,18 @@ class NotificationController extends Controller
             'data' => $notifications
         ]);
     }
+    public function countNotifications()
+    {
+        $user = Auth::user();
+        $unreadCount = Notification::where('id_usuario', $user->id)
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json([
+            'success' => true,
+            'unread_count' => $unreadCount
+        ]);
+    }
 
 
 
@@ -84,18 +96,18 @@ class NotificationController extends Controller
     // funciones de Admin
     public function EnviarNotificacionesGeneral(Request $request)
     {
-         // Validar los datos del formulario
-         $validator = Validator::make($request->all(), [
+        // Validar los datos del formulario
+        $validator = Validator::make($request->all(), [
             'mesaje' => 'required',
             'type' => 'required',
             'title' => 'required'
-         ]);
-         if ($validator->fails()) {
+        ]);
+        if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
             ], 400);
         }
-        
+
         $usuario = Usuario::all();
         $mesaje = $request->mesaje;
         foreach ($usuario as $usuarios) {

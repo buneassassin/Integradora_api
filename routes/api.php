@@ -45,6 +45,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('v1/tinaco/{id}', [TinacoController::class, 'actualizartinaco']);
     // Link para las notificaciones
     Route::get('v1/notifications', [notificationController::class, 'index']);
+    Route::get('v1/notificationsCount', [notificationController::class, 'countNotifications']);
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
     // Link para el reporte

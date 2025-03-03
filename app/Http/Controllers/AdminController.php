@@ -11,6 +11,18 @@ use Carbon\Carbon;
 
 class AdminController extends Controller
 {
+    public function isAdmin()
+    {
+        $user = auth()->user();
+        if ($user->rol == "Admin") {
+            return response()->json([
+                "success" => true
+            ],);
+        }
+        return response()->json([
+            "success" => false
+        ], 401);
+    }
     public function performAction()
     {
         $user = auth()->user();
@@ -42,7 +54,7 @@ class AdminController extends Controller
                     'email' => $usuario->email,
                     'rol' => $usuario->rol,
                     'is_active' => $usuario->is_active,
-                    'is_Inactive'=> $usuario->is_Inactive,
+                    'is_Inactive' => $usuario->is_Inactive,
                     'numero_tinacos' => $usuario->tinacos->count(),
                     'tinacos' => $usuario->tinacos,
                     'persona' => $usuario->persona,
@@ -52,6 +64,44 @@ class AdminController extends Controller
 
         return response()->json($usuarios, 200);
     }
+    public function obtenerUsuariosConTinacos2(Request $request)
+    {
+        $perPage = $request->input('per_page', 5); // Número de elementos por página, por defecto 10
+
+        // Obtener los usuarios paginados con relaciones
+        $usuarios = Usuario::with(['persona', 'tinacos'])->paginate($perPage);
+
+        // Transformar los ítems de la paginación
+        $usuariosTransformados = collect($usuarios->items())->map(function ($usuario) {
+            return [
+                'id' => $usuario->id,
+                'usuario_nom' => $usuario->usuario_nom,
+                'email' => $usuario->email,
+                'rol' => $usuario->rol,
+                'is_active' => $usuario->is_active,
+                'is_Inactive' => $usuario->is_Inactive,
+                'numero_tinacos' => $usuario->tinacos->count(),
+                'tinacos' => $usuario->tinacos,
+                'persona' => $usuario->persona,
+                'foto_perfil' => $usuario->foto_perfil,
+            ];
+        });
+
+        // Reconstruir el paginador con los datos transformados
+        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
+            $usuariosTransformados,
+            $usuarios->total(),
+            $usuarios->perPage(),
+            $usuarios->currentPage(),
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return response()->json($paginatedData, 200);
+    }
+
 
     public function desactivarUsuario(Request $request)
     {
@@ -114,7 +164,6 @@ class AdminController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Usuario activado correctamente.'], 200);
-     
     }
 
     //cambir el rol
@@ -152,13 +201,13 @@ class AdminController extends Controller
     {
         // Total de usuarios
         $totalUsers = Usuario::count();
-        
+
 
         // Usuarios activos basados en los tokens válidos (últimos 30 días)
         $bannedUsers = Usuario::where('is_Inactive', false)->count();
 
         // Total de usuarios baniados 
-        $activeUsers= Usuario::where('is_Inactive', true)->count();
+        $activeUsers = Usuario::where('is_Inactive', true)->count();
 
         // usuarios admin 
         $adminUsers = Usuario::where('rol', 'Admin')->count();
@@ -166,8 +215,8 @@ class AdminController extends Controller
         $userUsers = Usuario::where('rol', 'user')->count();
         $guestUsers = Usuario::where('rol', 'Guest')->count();
         $userUsers = $userUsers + $guestUsers;
-        
-       
+
+
 
         // Datos para el gráfico (usuarios registrados por mes en el último año)
         $usersByMonth = Usuario::selectRaw('MONTH(created_at) as month, COUNT(*) as count')

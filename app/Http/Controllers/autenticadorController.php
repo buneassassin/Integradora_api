@@ -113,7 +113,7 @@ class autenticadorController extends Controller
         $notificacion->title = 'Bienvenido';
         $notificacion->message = $mesaje;
         $notificacion->id_usuario = $user->id;
-        $notificacion->type = 'alert';
+        $notificacion->type = 'info';
         $notificacion->is_read = false;
         $notificacion->save();
 

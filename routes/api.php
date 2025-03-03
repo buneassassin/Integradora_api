@@ -34,6 +34,8 @@ Route::get('reset-password/{user}', [autenticadorController::class, 'showResetFo
 Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword']);
 // 'user.admin', 'inactive.block','active.only'
 Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('v1/isAdmin', [AdminController::class, 'isAdmin']);
+
     // Link para la imagen
     Route::post('v1/imagen', [ImagenController::class, 'store']);
     Route::get('v1/imagen', [ImagenController::class, 'ver']);
@@ -45,6 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('v1/tinaco/{id}', [TinacoController::class, 'actualizartinaco']);
     // Link para las notificaciones
     Route::get('v1/notifications', [notificationController::class, 'index']);
+    Route::get('v1/notifications2', [notificationController::class, 'index2']);
     Route::get('v1/notificationsCount', [notificationController::class, 'countNotifications']);
     Route::put('v1/notifications/{id}', [notificationController::class, 'markAsRead']);
     Route::delete('v1/notifications/{id}', [notificationController::class, 'destroy']);
@@ -58,6 +61,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
     Route::get('v1/admin-action', [AdminController::class, 'performAction']);
     Route::get('v1/usuariosConTinacos', [AdminController::class, 'obtenerUsuariosConTinacos']);
+    Route::get('v1/usuariosConTinacos2', [AdminController::class, 'obtenerUsuariosConTinacos2']);
+
     Route::post('v1/desactivarUsuario', [AdminController::class, 'desactivarUsuario']);
     Route::post('v1/activarUsuario', [AdminController::class, 'activarUsuario']);
     Route::post('v1/cambiarRol', [AdminController::class, 'cambiarRol']);

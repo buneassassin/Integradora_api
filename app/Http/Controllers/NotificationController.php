@@ -45,6 +45,43 @@ class NotificationController extends Controller
             'data' => $notifications
         ]);
     }
+    public function index2(Request $request)
+    {
+        $user = Auth::user();
+        $perPage = $request->input('per_page', 10); // Número de notificaciones por página, por defecto 10
+
+        $notifications = Notification::where('id_usuario', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        // Transformamos cada notificación para agregar el tiempo formateado
+        $notifications->getCollection()->transform(function ($notification) {
+            $createdTime = \Carbon\Carbon::parse($notification->created_at);
+            $diffInMinutes = $createdTime->diffInMinutes(\Carbon\Carbon::now());
+
+            if ($diffInMinutes < 60) {
+                $formattedTime = $diffInMinutes . ' minuto' . ($diffInMinutes > 1 ? 's' : '');
+            } elseif ($diffInMinutes < 1440) {
+                $hours = floor($diffInMinutes / 60);
+                $formattedTime = $hours . ' hora' . ($hours > 1 ? 's' : '');
+            } elseif ($diffInMinutes < 525600) {
+                $days = floor($diffInMinutes / 1440);
+                $formattedTime = $days . ' día' . ($days > 1 ? 's' : '');
+            } else {
+                $years = floor($diffInMinutes / 525600);
+                $formattedTime = $years . ' año' . ($years > 1 ? 's' : '');
+            }
+
+            $notification->formatted_created_at = $formattedTime;
+            return $notification;
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $notifications
+        ]);
+    }
+
     public function countNotifications()
     {
         $user = Auth::user();

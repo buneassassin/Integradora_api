@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('name');
             $table->integer('nivel_del_agua')->nullable();
             $table->timestamps();
-
-            
         });
     }
 

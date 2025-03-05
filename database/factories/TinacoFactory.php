@@ -2,11 +2,12 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Tinaco;
 use App\Models\Usuario;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Tinaco>
  */
 class TinacoFactory extends Factory
 {
@@ -15,12 +16,15 @@ class TinacoFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+    protected $model = Tinaco::class;
+
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
+            'id_usuario'     => Usuario::factory(),
+            'name'           => $this->faker->word,
             'nivel_del_agua' => $this->faker->numberBetween(0, 100),
-            'id_usuario' => Usuario::factory()->create()->id,
         ];
     }
 }

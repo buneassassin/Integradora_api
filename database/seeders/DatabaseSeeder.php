@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Notification;
+use App\Models\Usuario;
+use App\Models\Valor;
 use Illuminate\Database\Seeder;
-use Database\Seeders\PersonaSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,12 +16,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            RolesSeeder::class,
-            PersonaSeeder::class,
-            UsuarioSeeder::class,
-            TinacoSeeder::class,
-            SensorSeeder::class
-        ]);
+        // Crea 5 usuarios utilizando el factory de Usuario
+        Usuario::factory(5)->create();
+        Notification::factory(5)->create();
+        Valor::factory(5)->create();
+        
+
     }
 }

@@ -2,44 +2,39 @@
 
 namespace Database\Factories;
 
+use App\Models\Usuario;
+use App\Models\Persona;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
-use App\Models\Persona;
+use Illuminate\Support\Facades\Hash;
+
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Usuario>
  */
 class UsuarioFactory extends Factory
 {
     /**
      * Define the model's default state.
      *
-     * @return array
+     * @return array<string, mixed>
      */
+
+    protected $model = Usuario::class;
+
     public function definition()
     {
         return [
-            'usuario_nom' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'foto_perfil' => 'default.jpg',
-            'password' => bcrypt('password'),
-            'remember_token' => Str::random(10),
-            'id_persona' => Persona::factory()->create()->id,
+            'id_persona'         => Persona::factory(),
+            'usuario_nom'        => $this->faker->userName,
+            'email'              => $this->faker->unique()->safeEmail,
+            'email_verified_at'  => now(),
+            'foto_perfil'        => $this->faker->imageUrl(200, 200, 'people'),
+            'rol'                => 'Guest',
+            'password'           => Hash::make('password'),
+            'is_active'          => $this->faker->boolean,
+            'is_Inactive'        => $this->faker->boolean,
+            'remember_token'     => Str::random(10),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    public function unverified()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
-        });
     }
 }

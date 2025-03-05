@@ -32,6 +32,7 @@ Route::get('v1/me', [autenticadorController::class, 'me'])->middleware(['auth:sa
 Route::post('v1/reset-password', [autenticadorController::class, 'recuperarPassword']);
 Route::get('reset-password/{user}', [autenticadorController::class, 'showResetForm'])->name('reset-password');
 Route::post('reset-password/{user}', [autenticadorController::class, 'resetPassword']);
+Route::post('v1/sendEmail', [autenticadorController::class, 'sendEmail']);
 // 'user.admin', 'inactive.block','active.only'
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('v1/isAdmin', [AdminController::class, 'isAdmin']);

@@ -50,7 +50,7 @@ class autenticadorController extends Controller
         $user->usuario_nom = $request->usuario_nom;
         $user->id_persona = $persona->id;
         $user->email = $request->email;
-        $user->foto_perfil = 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y';
+        $user->foto_perfil ="https://ui-avatars.com/api/?name=" . urlencode($user->usuario_nom) . "&color=7F9CF5&background=EBF4FF";
         $user->password = bcrypt($request->password);
         $user->save();
 
@@ -277,6 +277,9 @@ class autenticadorController extends Controller
                 'id' => $user->id,
                 'email' => $user->email,
                 'rol' => $user->rol,
+                'is_Inactive' => $user->is_Inactive,
+                'is_active' => $user->is_active,
+                'id_persona' => $user->id_persona,
                 'usuario_nom' => $user->usuario_nom,
                 'foto_perfil' => $user->foto_perfil,
                 'persona' => [
@@ -333,6 +336,43 @@ class autenticadorController extends Controller
             return response()->json([
                 'message' => 'User not found'
             ], 404);
+        }
+
+        $url = URL::temporarySignedRoute('activate', now()->addMinutes(5), ['user' => $user->id]);
+
+        $activarCuenta = new Activacion($user, $url);
+
+        Mail::to($user->email)->send($activarCuenta);
+
+        return response()->json([
+            'message' => 'bueno, no se te vuelva a olvidar lo del correo bro',
+        ]);
+    }
+    //revia de correo de activacion
+    public function sendEmail(Request $request)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $user = Usuario::where('email', $data['email'])->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found'
+            ], 404);
+        }
+        //vereficar si el correo ya esta activad
+        if ($user->is_active) {
+            return response()->json([
+                'message' => 'Account already activated'
+            ], 200);
         }
 
         $url = URL::temporarySignedRoute('activate', now()->addMinutes(5), ['user' => $user->id]);

@@ -10,7 +10,7 @@ class Sensor extends Model
     use HasFactory;
 
     protected $table = 'sensor';
-    protected $fillable = [
+    protected $fillable = [ 
         'nombre',
         'modelo',
         'unidad_medida',

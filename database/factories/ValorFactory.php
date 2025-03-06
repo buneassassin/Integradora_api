@@ -21,7 +21,7 @@ class ValorFactory extends Factory
 
      protected $model = Valor::class;
 
-    public function definition()
+    public function definition() 
     {
         return [
             'sensor_id' => Sensor::factory(),

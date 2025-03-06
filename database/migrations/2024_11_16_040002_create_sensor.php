@@ -37,7 +37,7 @@ return new class extends Migration
                 'rango_min' => 5,
                 'rango_max' => 45,
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now() 
             ],
             [
                 'nombre' => 'PH',

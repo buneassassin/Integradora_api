@@ -23,33 +23,59 @@ class TemperaturaController extends Controller
     public function obtenertemp(Request $request)
     {
         $usuario = Auth::user();
-        $tinacoId = $request->input('tinaco_id');
-        $tinaco = Tinaco::find($tinacoId);
 
-        $Valor = Valor::where('tinaco_id', $tinaco->id)
-        ->join('sensor', 'valor.sensor_id', '=', 'sensor.id')
-        ->where('sensor.nombre', 'Temperatura') 
-        ->first();
-
-        if (!$Valor) {
-            return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
+        $tinaco_id = $request->input('tinaco_id');
+        $tinaco = Tinaco::find($tinaco_id);
+        if (!$tinaco) {
+            return response()->json(['mensaje' => 'Tinaco no encontrado'], 404);
         }
-        $sensor = $Valor->sensor;
+    
+        $resultado = Valor::raw(function ($collection) use ($tinaco_id) {
+            return $collection->aggregate([
+                [
+                    '$match' => ['tinaco_id' => $tinaco_id]
+                ],
+                [
+                    '$lookup' => [
+                        'from' => 'Sensor',
+                        'localField' => 'sensor_id',
+                        'foreignField' => 'id',
+                        'as' => 'sensor'
+                    ]
+                ],
+                [
+                    '$unwind' => '$sensor'
+                ],
+                [
+                    '$match' => ['sensor.nombre' => 'Temperatura']
+                ],
+                [
+                    '$sort' => ['created_at' => -1]
+                ],
+                [
+                    '$limit' => 1
+                ]
+            ]);
+        });
+        dd($resultado);
+    
+        // Verifica si se obtuvo un resultado
+        if (!$resultado->isEmpty()) {
+            $Valor = $resultado->first();
+            $sensor = $Valor->sensor;
+        } else {
+            return response()->json(['mensaje' => 'Valor o sensor no encontrado para el tinaco especificado'], 404);
+        }
+    
+        /*
         $data = $this->adafruitService->getFeedData("temperatura");
-
         $mensaje = $this->significadoDatos($data);
-
-        $guardarDatos = $this->guardarDatos($Valor, $tinaco,$data, $sensor, $usuario);
-
+        $guardarDatos = $this->guardarDatos($Valor, $tinaco, $data, $sensor, $usuario);
+        */
+    
         return response()->json(['mensaje' => $mensaje]);
-
-
-
-        
-
-
-        
     }
+    
 
         public function significadodatos($data)
         {

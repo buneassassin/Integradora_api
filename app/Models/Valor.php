@@ -17,7 +17,7 @@ class Valor extends Model
         'sensor_id',
         'tinaco_id',
         'valor'
-    ];
+    ]; 
 
     public function sensor()
     {

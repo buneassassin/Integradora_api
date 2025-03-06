@@ -97,6 +97,7 @@ return [
             'database' => env('DB_DATABASE'),
             'options' => [
                 'tlsAllowInvalidCertificates' => true, // Be cautious with this in production
+                'database' => 'admin'
             ]
         ],
     ],

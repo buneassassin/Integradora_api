@@ -16,6 +16,10 @@ use App\Http\Controllers\AdafruitController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\encenderbombaController;
 
+Route::get('v1/prueba', function () {
+    return 'Hola';
+});
+
 Route::middleware('auth:sanctum')->get('v1/user', function (Request $request) {
     return $request->user();
 });
@@ -77,6 +81,7 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
 
 Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
 
+//¿por qué por el verbo post? debería ser get >:(
 Route::post('v1/temperatura', [TemperaturaController::class, 'obtenertemp']);
 Route::post('v1/ph', [phController::class, 'obtenerph']);
 Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);

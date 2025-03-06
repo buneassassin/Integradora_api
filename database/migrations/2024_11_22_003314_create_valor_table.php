@@ -12,9 +12,11 @@ return new class extends Migration
      *
      * @return void
      */
+
+     protected $connection = 'mongodb';
     public function up()
     {
-        Schema::create('valor', function (Blueprint $table) {
+        Schema::create('Valor', function (Blueprint $table) {
             $table->id();
             $table->foreignId('sensor_id')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('tinaco_id')->constrained('tinaco')->onDelete('cascade');
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('valor');
+        Schema::dropIfExists('Valor');
     }
 };

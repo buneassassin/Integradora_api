@@ -18,7 +18,7 @@ class TinacoFactory extends Factory
      */
 
     protected $model = Tinaco::class;
-
+ 
     public function definition()
     {
         return [

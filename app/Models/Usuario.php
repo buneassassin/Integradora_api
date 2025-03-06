@@ -11,7 +11,7 @@ use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 use App\Models\Notification;
 
-
+ 
 // paquete para guardar imagenes ejemplo:
 /*
  $image = Image::make('path/to/image.jpg');

@@ -15,7 +15,7 @@ class Tinaco extends Model
         'name',
         'nivel_del_agua',
     ];
-
+ 
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'id_usuario');

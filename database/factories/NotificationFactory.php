@@ -13,7 +13,7 @@ class NotificationFactory extends Factory
 {
     /**
      * Define the model's default state.
-     *
+     * 
      * @return array<string, mixed>
      */
     protected $model = Notification::class;

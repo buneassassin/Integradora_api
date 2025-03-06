@@ -23,7 +23,7 @@ class UsuarioFactory extends Factory
     protected $model = Usuario::class;
 
     public function definition()
-    {
+    { 
         return [
             'id_persona'         => Persona::factory(),
             'usuario_nom'        => $this->faker->userName,

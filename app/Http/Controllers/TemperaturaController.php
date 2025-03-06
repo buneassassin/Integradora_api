@@ -22,6 +22,50 @@ class TemperaturaController extends Controller
    
     public function obtenertemp(Request $request)
     {
+        $tinacoId = $request->input('tinaco_id');
+        $tinaco = Tinaco::find($tinacoId);
+
+        $valores = Valor::where('tinaco_id', $tinaco->id)
+        ->where('sensor_id', 2) // Filtramos donde el sensor_id sea 2
+        ->orderBy('created_at', 'desc') // Ordenamos del más nuevo al más viejo
+        ->first(); // Devolvemos solo el primero
+
+        dd($valores);
+        return $valores;
+    }
+
+    /*
+----------------------------------------------------------------------------------------------resplado función trecker
+
+  public function obtenertemp(Request $request)
+    {
+        $usuario = Auth::user();
+        $tinacoId = $request->input('tinaco_id');
+        $tinaco = Tinaco::find($tinacoId);
+
+        $Valor = Valor::where('tinaco_id', $tinaco->id)
+        ->join('sensor', 'valor.sensor_id', '=', 'sensor.id')
+        ->where('sensor.nombre', 'Temperatura') 
+        ->first();
+
+        if (!$Valor) {
+            return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
+        }
+        $sensor = $Valor->sensor;
+        $data = $this->adafruitService->getFeedData("temperatura");
+
+        $mensaje = $this->significadoDatos($data);
+
+        $guardarDatos = $this->guardarDatos($Valor, $tinaco,$data, $sensor, $usuario);
+
+        return response()->json(['mensaje' => $mensaje]);
+    }
+
+--------------------------------------------------------------------------------------------
+-respaldo lookup que igual no me salió
+
+ public function obtenertemp(Request $request)
+    {
         $usuario = Auth::user();
 
         $tinaco_id = $request->input('tinaco_id');
@@ -73,9 +117,8 @@ class TemperaturaController extends Controller
         $guardarDatos = $this->guardarDatos($Valor, $tinaco, $data, $sensor, $usuario);
         */
     
-        return response()->json(['mensaje' => $mensaje]);
-    }
-    
+       // return response()->json(['mensaje' => $mensaje]);
+   // }
 
         public function significadodatos($data)
         {

@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\Auth;
 
 class ultrasonicoController extends Controller
 {
+
+        //NOTA: EL SENSOR DE ULTRASONICO 1
+        public function obtenerturbidez(Request $request)
+        {
+            $tinacoId = $request->input('tinaco_id');
+            $tinaco = Tinaco::find($tinacoId);
+    
+            $valores = Valor::where('tinaco_id', $tinaco->id)
+                ->where('sensor_id', 1)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            return $valores;
+        }
+    /*
     protected $adafruitService;
 
     public function __construct(AdafruitService $adafruitService)
@@ -41,14 +55,8 @@ class ultrasonicoController extends Controller
         $mensaje = $this->significadoDatos($data);
     
         return response()->json(['mensaje' => $mensaje]);
-    
-    
-    
-        
-    
-    
-        
-    }
+   
+    }*/
     
         public function significadodatos($data)
         {

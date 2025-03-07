@@ -3,41 +3,39 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\AdafruitService;
+//use App\Services\AdafruitService;
 use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+
 class TemperaturaController extends Controller
 {
-    protected $adafruitService;
-        //falta poner bd
-
-    public function __construct(AdafruitService $adafruitService)
-    {
-        $this->adafruitService = $adafruitService;
-    }
-
-   
+    //NOTA: EL SENSOR DE TEMPERATURA ES EL 2
     public function obtenertemp(Request $request)
     {
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
         $valores = Valor::where('tinaco_id', $tinaco->id)
-        ->where('sensor_id', 2) // Filtramos donde el sensor_id sea 2
-        ->orderBy('created_at', 'desc') // Ordenamos del más nuevo al más viejo
-        ->first(); // Devolvemos solo el primero
-
-        dd($valores);
+            ->where('sensor_id', 2)
+            ->orderBy('created_at', 'desc')
+            ->first();
         return $valores;
     }
 
-    /*
-----------------------------------------------------------------------------------------------resplado función trecker
+    // adafruit deprecated 
+    /*protected $adafruitService;
+        //falta poner bd
 
-  public function obtenertemp(Request $request)
+    public function __construct(AdafruitService $adafruitService)
+    {
+        $this->adafruitService = $adafruitService;
+    }*/
+   
+    /*
+    public function obtenertemp(Request $request)
     {
         $usuario = Auth::user();
         $tinacoId = $request->input('tinaco_id');
@@ -60,65 +58,7 @@ class TemperaturaController extends Controller
 
         return response()->json(['mensaje' => $mensaje]);
     }
-
---------------------------------------------------------------------------------------------
--respaldo lookup que igual no me salió
-
- public function obtenertemp(Request $request)
-    {
-        $usuario = Auth::user();
-
-        $tinaco_id = $request->input('tinaco_id');
-        $tinaco = Tinaco::find($tinaco_id);
-        if (!$tinaco) {
-            return response()->json(['mensaje' => 'Tinaco no encontrado'], 404);
-        }
-    
-        $resultado = Valor::raw(function ($collection) use ($tinaco_id) {
-            return $collection->aggregate([
-                [
-                    '$match' => ['tinaco_id' => $tinaco_id]
-                ],
-                [
-                    '$lookup' => [
-                        'from' => 'Sensor',
-                        'localField' => 'sensor_id',
-                        'foreignField' => 'id',
-                        'as' => 'sensor'
-                    ]
-                ],
-                [
-                    '$unwind' => '$sensor'
-                ],
-                [
-                    '$match' => ['sensor.nombre' => 'Temperatura']
-                ],
-                [
-                    '$sort' => ['created_at' => -1]
-                ],
-                [
-                    '$limit' => 1
-                ]
-            ]);
-        });
-        dd($resultado);
-    
-        // Verifica si se obtuvo un resultado
-        if (!$resultado->isEmpty()) {
-            $Valor = $resultado->first();
-            $sensor = $Valor->sensor;
-        } else {
-            return response()->json(['mensaje' => 'Valor o sensor no encontrado para el tinaco especificado'], 404);
-        }
-    
-        /*
-        $data = $this->adafruitService->getFeedData("temperatura");
-        $mensaje = $this->significadoDatos($data);
-        $guardarDatos = $this->guardarDatos($Valor, $tinaco, $data, $sensor, $usuario);
-        */
-    
-       // return response()->json(['mensaje' => $mensaje]);
-   // }
+    */
 
         public function significadodatos($data)
         {

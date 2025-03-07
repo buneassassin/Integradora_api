@@ -8,7 +8,7 @@
         "php": "^8.0",
         "cloudinary-labs/cloudinary-laravel": "^2.1",
         "fakerphp/faker": "^1.24",
-        "fruitcake/laravel-cors": "^2.0.5",
+        "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.9",
         "illuminate/support": "*",
         "intervention/image": "^3.9",

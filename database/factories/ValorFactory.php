@@ -26,7 +26,7 @@ class ValorFactory extends Factory
         return [
             'sensor_id' => Sensor::factory(),
             'tinaco_id' => Tinaco::factory(),
-            'value'     => $this->faker->randomFloat(2, 0, 100), // Asegúrate de que el campo se llame 'value' en el modelo o migración
+            'valor'     => $this->faker->randomFloat(2, 0, 100), // Asegúrate de que el campo se llame 'value' en el modelo o migración
         ];
     }
 }

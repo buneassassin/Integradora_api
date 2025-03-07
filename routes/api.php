@@ -15,6 +15,7 @@ use App\Http\Controllers\ultrasonicoController;
 use App\Http\Controllers\AdafruitController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\encenderbombaController;
+use App\Http\Controllers\SensorController;
 
 Route::get('v1/prueba', function () {
     return 'Hola';
@@ -82,8 +83,8 @@ Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {
 
 });
 
-Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
-
+//Route::get('v1/ada/{feed}', [AdafruitController::class, 'getFeedData']);
+Route::post('v1/data', [SensorController::class, 'store']);
 Route::post('v1/temperatura', [TemperaturaController::class, 'obtenertemp']);
 Route::post('v1/ph', [phController::class, 'obtenerph']);
 Route::post('v1/turbidez', [turbidezController::class, 'obtenerturbidez']);
@@ -93,8 +94,3 @@ Route::post('v1/ultrasonico', [ultrasonicoController::class, 'obtenerturbidez'])
 //bomba
 Route::post('v1/encenderbomba', [encenderbombaController::class, 'encenderbomba']);
 Route::post('v1/apagarbomba', [encenderbombaController::class, 'apagarbomba']);
-
-Route::get('v1/pruebaToken', function () {
-    $usuario = Auth::user();
-    return $usuario->id;
-});//null cause its outside a middleware

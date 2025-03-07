@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('sensor_id')->constrained('sensor')->onDelete('cascade');
             $table->foreignId('tinaco_id')->constrained('tinaco')->onDelete('cascade');
-            $table->decimal('value', 10, 2)->nullable();
+            $table->decimal('valor', 10, 2)->nullable();
             $table->timestamps();
         });
         

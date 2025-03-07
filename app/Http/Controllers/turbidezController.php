@@ -11,6 +11,20 @@ use Illuminate\Support\Facades\Auth;
 
 class turbidezController extends Controller
 {
+        //NOTA: EL SENSOR DE TURBIDEZ 4
+        public function obtenerturbidez(Request $request)
+        {
+            $tinacoId = $request->input('tinaco_id');
+            $tinaco = Tinaco::find($tinacoId);
+    
+            $valores = Valor::where('tinaco_id', $tinaco->id)
+                ->where('sensor_id', 4)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            return $valores;
+        }
+
+    /*
     protected $adafruitService;
     //falta poner bd
 
@@ -42,14 +56,8 @@ public function obtenerturbidez( Request $request)
     $mensaje = $this->significadoDatos($data);
 
     return response()->json(['mensaje' => $mensaje]);
-
-
-
-    
-
-
-    
-}
+  
+}*/
 
     public function significadodatos($data)
     {

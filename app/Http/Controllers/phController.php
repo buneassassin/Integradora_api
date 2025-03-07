@@ -13,6 +13,20 @@ use Illuminate\Support\Facades\Auth;
 
 class phController extends Controller
 {
+        //NOTA: EL SENSOR DE ph3
+        public function obtenerph(Request $request)
+        {
+            $tinacoId = $request->input('tinaco_id');
+            $tinaco = Tinaco::find($tinacoId);
+    
+            $valores = Valor::where('tinaco_id', $tinaco->id)
+                ->where('sensor_id', 3)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            return $valores;
+        }
+
+    /*
     protected $adafruitService;
         //falta poner bd
 
@@ -55,14 +69,7 @@ class phController extends Controller
         $mensaje = $this->significadoDatos($data);
 
         return response()->json(['mensaje' => $mensaje]);
-
-
-
-        
-
-
-        
-    }
+    }*/
 
         public function significadodatos($data)
         {

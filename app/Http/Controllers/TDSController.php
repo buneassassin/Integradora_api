@@ -12,6 +12,21 @@ use App\Models\Valor;
 use Illuminate\Support\Facades\Auth;
 class TDSController extends Controller
 {
+
+        //NOTA: EL SENSOR DE TDS 5
+        public function obtenerturbidez(Request $request)
+        {
+            $tinacoId = $request->input('tinaco_id');
+            $tinaco = Tinaco::find($tinacoId);
+    
+            $valores = Valor::where('tinaco_id', $tinaco->id)
+                ->where('sensor_id', 5)
+                ->orderBy('created_at', 'desc')
+                ->first();
+            return $valores;
+        }
+
+    /*
     protected $adafruitService;
 
 public function __construct(AdafruitService $adafruitService)
@@ -41,15 +56,8 @@ public function obtenerturbidez(Request $request)
 
     $mensaje = $this->significadoDatos($data);
 
-    return response()->json(['mensaje' => $mensaje]);
-
-
-
-    
-
-
-    
-}
+    return response()->json(['mensaje' => $mensaje]);    
+}*/
 
     public function significadodatos($data)
     {

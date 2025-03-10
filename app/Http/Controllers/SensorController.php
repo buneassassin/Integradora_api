@@ -23,9 +23,9 @@ class SensorController extends Controller
         // Conectar a MongoDB usando la URI
         $client = new MongoClient($db_uri);
 
-        // Seleccionar la base de datos y la colección
-        $database_name = 'u427674310_Integradora'; // Nombre de la base de datos
-        $collection_name = 'Valor';    // Nombre de la colección
+        // Seleccionar la base de datos y la colección usando las variables de entorno
+        $database_name = env('DB_NAME'); // Nombre de la base de datos
+        $collection_name = env('DB_COLLECTION'); // Nombre de la colección
         $collection = $client->$database_name->$collection_name;
 
         // Transformar el campo "timestamp" en "created_at"

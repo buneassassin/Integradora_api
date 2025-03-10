@@ -4,18 +4,26 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use MongoDB\Client as MongoClient;
+use Illuminate\Support\Facades\Validator;
 
 class SensorController extends Controller
 {
     public function store(Request $request)
     {
         // Validar los datos recibidos
-        $request->validate([
+        $validator = Validator::make($request->all(), [            
             'sensor_id' => 'required|integer',
             'tinaco_id' => 'required|integer',
             'valor' => 'required|numeric',
             'timestamp' => 'required|date'
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'errors' => $validator->errors()
+            ], 400);
+        }
 
         // Obtener la URI de MongoDB desde el archivo .env
         $db_uri = env('DB_URI');

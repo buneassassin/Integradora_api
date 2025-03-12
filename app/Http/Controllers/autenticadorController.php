@@ -23,47 +23,46 @@ class autenticadorController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'usuario_nom' => 'required',
-            'email' => 'required|email|unique:usuario',
-            'password' => 'required',
-            'nombres' => 'required',
-            'apellidoPaterno' => 'required',
-            'apellidoMaterno' => 'required',
-            'telefono' => 'required'
-
+            'usuario_nom'      => 'nullable|string',
+            'email'            => 'required|email|unique:usuario',
+            'password'         => 'required',
+            'nombres'          => 'nullable|string',
+            'apellidoPaterno'  => 'nullable|string',
+            'apellidoMaterno'  => 'nullable|string',
+            'telefono'         => 'nullable|string'
         ]);
-
+    
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
             ], 400);
         }
+    
+        // Si no se envían ciertos datos, asignamos valores por defecto sutiles
         $persona = new Persona();
-
-        $persona->nombres = $request->nombres;
-        $persona->a_p = $request->apellidoPaterno;
-        $persona->a_m = $request->apellidoMaterno;
-        $persona->telefono = $request->telefono;
+        $persona->nombres = $request->nombres ?? 'Sin nombre';
+        $persona->a_p = $request->apellidoPaterno ?? 'Sin apellido paterno';
+        $persona->a_m = $request->apellidoMaterno ?? 'Sin apellido materno';
+        $persona->telefono = $request->telefono ?? '0000000000';
         $persona->save();
+    
         $user = new Usuario();
-
-        $user->usuario_nom = $request->usuario_nom;
+        // Si no se proporciona usuario_nom, se utiliza el nombre o el valor por defecto 'Sin nombre'
+        $user->usuario_nom = $request->usuario_nom ?? ($request->nombres ?? 'Sin nombre');
         $user->id_persona = $persona->id;
         $user->email = $request->email;
         $user->foto_perfil = "https://ui-avatars.com/api/?name=" . urlencode($user->usuario_nom) . "&color=7F9CF5&background=EBF4FF";
         $user->password = bcrypt($request->password);
         $user->save();
-
-
-        // $url = URL::temporarySignedRoute('activate', now()->addMinutes(1), ['user' => $user->id]);
-
-        //Mail::to($user->email)->send(new Activacion($user, $url));
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Usuario registrado exitosamente'
         ], 200);
     }
+    
+    
+
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [

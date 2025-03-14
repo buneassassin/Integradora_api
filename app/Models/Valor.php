@@ -14,6 +14,7 @@ class Valor extends Model
     protected $collection = 'Valor';
 
     protected $fillable = [
+        '_id',
         'sensor_id',
         'tinaco_id',
         'valor'

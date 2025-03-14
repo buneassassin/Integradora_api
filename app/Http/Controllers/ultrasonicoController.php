@@ -12,18 +12,19 @@ use Illuminate\Support\Facades\Auth;
 class ultrasonicoController extends Controller
 {
 
-        //NOTA: EL SENSOR DE ULTRASONICO 1
-        public function obtenerturbidez(Request $request)
-        {
-            $tinacoId = $request->input('tinaco_id');
-            $tinaco = Tinaco::find($tinacoId);
-    
-            $valores = Valor::where('tinaco_id', $tinaco->id)
-                ->where('sensor_id', 1)
-                ->orderBy('created_at', 'desc')
-                ->first();
-            return $valores;
-        }
+    //NOTA: EL SENSOR DE ULTRASONICO 1
+    public function obtenerturbidez(Request $request)
+    {
+        $tinacoId = $request->input('tinaco_id');
+        $tinaco = Tinaco::find($tinacoId);
+
+        $valores = Valor::where('tinaco_id', $tinaco->id)
+            ->where('sensor_id', 1)
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        return $valores;
+    }
     /*
     protected $adafruitService;
 
@@ -57,94 +58,85 @@ class ultrasonicoController extends Controller
         return response()->json(['mensaje' => $mensaje]);
    
     }*/
-    
-        public function significadodatos($data)
-        {
-            
-            $data = is_string($data) ? json_decode($data) : $data;
-            
-            $valor = $data['last_value'] ?? null;
-    
-            if (is_null($valor)) 
-            {
-    
-    
-                return "No hay datos de altura para calcular";
-    
-                
-            }
-            $valor = trim($valor);
-            $valor = is_numeric($valor) ? (float) $valor : null;
-        
-            if (is_null($valor)) {
-                return "El valor de la altura no es numérico";
-            }
-            if ($valor >= 20) 
-            {
-    
-                return "Underflow: {$valor}";
-            } 
-       
-             else if ($valor <= 20)
-             {
-                return "overflow: {$valor}";
-             }
-      
-    
-            return "valor fuera de Sensor: {$valor}";
+
+    public function significadodatos($data)
+    {
+
+        $data = is_string($data) ? json_decode($data) : $data;
+
+        $valor = $data['last_value'] ?? null;
+
+        if (is_null($valor)) {
+
+
+            return "No hay datos de altura para calcular";
         }
-            
-    
-    
-    
-    
-            //switch ($data->data->value) 
-            
-               
-    
-               // case 0:
-                 //   return "Temperatura baja";
-                    //break;
-            
-        public function guardarDatos($Valor,$tinaco,$data, $sensor, $usuario)
-        {
-            $data = is_string($data) ? json_decode($data) : $data;
-            
-            $valor = $data['last_value'] ?? null;
-    
-            if (is_null($valor)) 
-            {
-    
-    
-                return "Datos de tds no disponibles";
-    
-                
-            }
-            $valor = trim($valor);
-            $valor = is_numeric($valor) ? (float) $valor : null;
-            
-            
-            //por si no habia
-            /* $sensor = Sensor::firstOrCreate([
+        $valor = trim($valor);
+        $valor = is_numeric($valor) ? (float) $valor : null;
+
+        if (is_null($valor)) {
+            return "El valor de la altura no es numérico";
+        }
+        if ($valor >= 20) {
+
+            return "Underflow: {$valor}";
+        } else if ($valor <= 20) {
+            return "overflow: {$valor}";
+        }
+
+
+        return "valor fuera de Sensor: {$valor}";
+    }
+
+
+
+
+
+    //switch ($data->data->value) 
+
+
+
+    // case 0:
+    //   return "Temperatura baja";
+    //break;
+
+    public function guardarDatos($Valor, $tinaco, $data, $sensor, $usuario)
+    {
+        $data = is_string($data) ? json_decode($data) : $data;
+
+        $valor = $data['last_value'] ?? null;
+
+        if (is_null($valor)) {
+
+
+            return "Datos de tds no disponibles";
+        }
+        $valor = trim($valor);
+        $valor = is_numeric($valor) ? (float) $valor : null;
+
+
+        //por si no habia
+        /* $sensor = Sensor::firstOrCreate([
                 'nombre' => 'Ultrasonico',
                 "modelo" => "JSN-SR04T-2.0",
                 "unidad_medida" => "cm",
             
             
             ]); */
-          /*   $Sensor = Sensor::firstOrCreate([
+        /*   $Sensor = Sensor::firstOrCreate([
                 'Sensor_min' => 20,
                 'Sensor_max' => 600,
                
             ]); */
-    
-            $Valor = Valor::create([
-                'value' => $valor,
-                'id_sensor'=> 1
-            ]);
-           // $sensor->save();
-           $Valor->id_valor = $Valor->id;
-           $Valor->save();
-    
-           $Valor->save();
-        }}
+
+        $Valor = Valor::create([
+            'value' => $valor,
+            'id_sensor' => 1
+        ]);
+        // $sensor->save();
+        $Valor->id_valor = $Valor->id;
+        $Valor->save();
+
+        $Valor->save();
+    }
+}

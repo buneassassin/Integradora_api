@@ -8,19 +8,39 @@ use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class turbidezController extends Controller
 {
         //NOTA: EL SENSOR DE TURBIDEZ 4
         public function obtenerturbidez(Request $request)
         {
+            //vaidamos los datos
+            $validator = Validator::make($request->all(), [
+                'tinaco_id' => 'required',
+            ]);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => $validator->errors()
+                ], 400);
+            }
+            //validamos que el tinaco exista
+            $tinaco = Tinaco::find($request->input('tinaco_id'));
+            if (!$tinaco) {
+                return response()->json([
+                    'message' => 'Tinaco no encontrado'
+                ], 404);
+            }
+
             $tinacoId = $request->input('tinaco_id');
             $tinaco = Tinaco::find($tinacoId);
     
             $valores = Valor::where('tinaco_id', $tinaco->id)
                 ->where('sensor_id', 4)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->first();
+
             return $valores;
         }
 

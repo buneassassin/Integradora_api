@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\AdafruitService;
 use App\Models\Sensor;
-
-
 use App\Models\Tinaco;
 use App\Models\Valor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 class TDSController extends Controller
 {
 
@@ -19,10 +18,17 @@ class TDSController extends Controller
             $tinacoId = $request->input('tinaco_id');
             $tinaco = Tinaco::find($tinacoId);
     
-            $valores = Valor::where('tinaco_id', $tinaco->id)
-                ->where('sensor_id', 5)
-                ->orderBy('created_at', 'desc')
-                ->first();
+            $valores = DB::connection('mongodb')
+                ->collection('Valor')
+                ->get();
+    
+            if (!$valores) {
+                return response()->json(['mensaje' => 'Sensor de TDS no encontrado para el tinaco especificado'], 404);
+            }    
+            $valores = $valores->where('tinaco_id', $tinaco->id);
+            $valores = $valores->where('sensor_id', 5);
+            $valores = $valores->take(1);
+
             return $valores;
         }
 

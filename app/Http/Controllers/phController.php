@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class phController extends Controller
 {
@@ -19,10 +20,18 @@ class phController extends Controller
             $tinacoId = $request->input('tinaco_id');
             $tinaco = Tinaco::find($tinacoId);
     
-            $valores = Valor::where('tinaco_id', $tinaco->id)
-                ->where('sensor_id', 3)
-                ->orderBy('created_at', 'desc')
-                ->first();
+            $valores = DB::connection('mongodb')
+                ->collection('Valor')
+                ->get();
+    
+            if (!$valores) {
+                return response()->json(['mensaje' => 'Sensor de ph no encontrado para el tinaco especificado'], 404);
+            }
+    
+            $valores = $valores->where('tinaco_id', $tinaco->id);
+            $valores = $valores->where('sensor_id', 3);
+            $valores = $valores->take(1);
+
             return $valores;
         }
 

@@ -97,8 +97,10 @@ class ReporteController extends Controller
                 DB::raw('DATE(created_at) as fecha'),
                 DB::raw('AVG(valor) as promedio_valor'),
                 DB::raw('valor as valor'),
-            )
+                DB::raw('COUNT(*) as cantidad_lecturas'),)
+            ->groupBy('fecha')
             ->get();
+
         
             // Formato de respuesta
             return response()->json([
@@ -149,12 +151,8 @@ class ReporteController extends Controller
              }
             
             // Consulta para obtener el historial del sensor filtrado por nombre
-            $datos = DB::table('valor')
-                ->select(
-                    'valor.*'
-                )
-                ->where('valor.id_sensor', '=', $id_sensor)
-                ->orderBy('valor.created_at', 'desc')
+            $datos = DB::connection('mongodb')
+                ->collection('Valor')
                 ->get();
             
     
@@ -165,10 +163,10 @@ class ReporteController extends Controller
                     'message' => 'No se encontraron datos para el sensor especificado.'
                 ], 404);
             }
-            //juntamos los datos con el nombre del sensor
-            foreach ($datos as $dato) {
-                $dato->nombre = $nombreSensor;
-            }
+  
+            $datos = $datos->where('sensor_id', $id_sensor);
+            
+            
     
             // Retornamos los datos completos del historial del sensor
             return response()->json([

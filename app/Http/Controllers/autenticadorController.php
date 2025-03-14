@@ -78,18 +78,11 @@ class autenticadorController extends Controller
 
         $user = Usuario::where('email', $request->email)->first();
         // vereficar si el usuario existe o el password es correcto
-        if (!$user || !password_verify($request->password, $user->password)) {
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'Invalid credentials'
-            ])
-                ->setStatusCode(401);
-        }
-
-        /*    if (!$user->is_active) {
-            return response()->json([
-                'message' => 'Account not activated'
+                'message' => 'Invalid email or password'
             ], 401);
-        }*/
+        }
 
         $mensaje = 'El usuario ' . $user->usuario_nom . ' ha iniciado sesion';
 

@@ -9,6 +9,7 @@ use App\Models\Sensor;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TemperaturaController extends Controller
 {
@@ -18,10 +19,18 @@ class TemperaturaController extends Controller
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
-        $valores = Valor::where('tinaco_id', $tinaco->id)
-            ->where('sensor_id', 2)
-            ->orderBy('created_at', 'desc')
-            ->first();
+        $valores = DB::connection('mongodb')
+            ->collection('Valor')
+            ->get();
+
+        if (!$valores) {
+            return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
+        }
+
+        $valores = $valores->where('tinaco_id', $tinaco->id);
+        $valores = $valores->where('sensor_id', 2);
+        $valores = $valores->take(1);
+
         return $valores;
     }
 

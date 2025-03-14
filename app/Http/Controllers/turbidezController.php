@@ -9,6 +9,7 @@ use App\Models\Sensor;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class turbidezController extends Controller
 {
@@ -36,10 +37,17 @@ class turbidezController extends Controller
             $tinacoId = $request->input('tinaco_id');
             $tinaco = Tinaco::find($tinacoId);
     
-            $valores = Valor::where('tinaco_id', $tinaco->id)
-                ->where('sensor_id', 4)
-                ->orderBy('created_at', 'asc')
-                ->first();
+            $valores = DB::connection('mongodb')
+                ->collection('Valor')
+                ->get();
+    
+            if (!$valores) {
+                return response()->json(['mensaje' => 'Sensor de ph no encontrado para el tinaco especificado'], 404);
+            }
+    
+            $valores = $valores->where('tinaco_id', $tinaco->id);
+            $valores = $valores->where('sensor_id', 4);
+            $valores = $valores->take(1);
 
             return $valores;
         }

@@ -8,6 +8,7 @@ use App\Models\Valor;
 use App\Models\Sensor;
 use App\Models\Tinaco;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ultrasonicoController extends Controller
 {
@@ -18,10 +19,20 @@ class ultrasonicoController extends Controller
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
-        $valores = Valor::where('tinaco_id', $tinaco->id)
-            ->where('sensor_id', 1)
+        $valores = DB::connection('mongodb')
+            ->collection('Valor')
             ->orderBy('created_at', 'desc')
-            ->first();
+            ->get();
+
+        if (!$valores) {
+            return response()->json(['mensaje' => 'Sensor ultrasonico no encontrado para el tinaco especificado'], 404);
+        }
+
+        $valores = $valores->where('tinaco_id', $tinaco->id);
+        $valores = $valores->where('sensor_id', 1);
+        $valores = $valores->take(1);
+        
+        
 
         return $valores;
     }

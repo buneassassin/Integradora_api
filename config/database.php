@@ -109,8 +109,9 @@ return [
             ]
         ],
        /* 'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('DB_URI')
+            'driver'   => 'mongodb',
+            'dsn'      => env('DB_URI'),
+            'database' => env('DB_NAME', 'Monguillodb'),
         ], */
     ],
 

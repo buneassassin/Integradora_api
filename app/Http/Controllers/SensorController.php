@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use MongoDB\Client as MongoClient;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Tinaco;
 
 class SensorController extends Controller
 {
@@ -23,6 +24,17 @@ class SensorController extends Controller
                 'errors' => $validator->errors()
             ], 400);
         }
+        // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
+        $sensor_id = $request->input('sensor_id');
+
+        if ($sensor_id == 1) {
+            $tinaco_id = $request->input('tinaco_id');
+            $nivel = $request->input('valor');
+            $tinaco = Tinaco::find($tinaco_id);
+            $tinaco->nivel_del_agua = $nivel;
+            $tinaco->save();
+        }
+
         $timestamp = $request->input('timestamp')??date('Y-m-d H:i:s');
 
         // Obtener la URI de MongoDB desde el archivo .env

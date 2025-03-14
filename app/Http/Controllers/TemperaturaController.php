@@ -21,17 +21,20 @@ class TemperaturaController extends Controller
 
         $valores = DB::connection('mongodb')
             ->collection('Valor')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         if (!$valores) {
             return response()->json(['mensaje' => 'Sensor de temperatura no encontrado para el tinaco especificado'], 404);
         }
 
-        $valores = $valores->where('tinaco_id', $tinaco->id);
-        $valores = $valores->where('sensor_id', 2);
-        $valores = $valores->take(1);
+      
+        $valor = $valores->where('tinaco_id', $tinaco->id)
+            ->where('sensor_id', 2)
+            ->first();
 
-        return $valores;
+
+        return response()->json($valor, 200);
     }
 
     // adafruit deprecated 

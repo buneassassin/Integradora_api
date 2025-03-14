@@ -19,23 +19,29 @@ class ultrasonicoController extends Controller
         $tinacoId = $request->input('tinaco_id');
         $tinaco = Tinaco::find($tinacoId);
 
+        if (!$tinaco) {
+            return response()->json(['mensaje' => 'Tinaco no encontrado'], 404);
+        }
+
+        // Obtenemos todos los valores de la colección Valor
         $valores = DB::connection('mongodb')
             ->collection('Valor')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        if (!$valores) {
-            return response()->json(['mensaje' => 'Sensor ultrasonico no encontrado para el tinaco especificado'], 404);
+        if ($valores->isEmpty()) {
+            return response()->json(['mensaje' => 'No se encontraron registros en la colección Valor'], 404);
         }
 
-        $valores = $valores->where('tinaco_id', $tinaco->id);
-        $valores = $valores->where('sensor_id', 1);
-        $valores = $valores->take(1);
-        
+        // Filtramos por tinaco_id y sensor_id y obtenemos el primer registro
+        $valor = $valores->where('tinaco_id', $tinaco->id)
+            ->where('sensor_id', 1)
+            ->first();
         
 
-        return $valores;
+        return response()->json($valor, 200);
     }
+
     /*
     protected $adafruitService;
 

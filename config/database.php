@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => env('DB_CONNECTION', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,10 +46,10 @@ return [
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('DB_DATABASE', 'integraputa'),
-            'username' => env('DB_USERNAME', 'root'),
+            'host' => env('DB_HOST'),
+            'port' => env('DB_PORT'),
+            'database' => env('DB_DATABASE'),
+            'username' => env('DB_USERNAME',),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8',
@@ -94,23 +94,24 @@ return [
         //no es necesario si ya lo tienes en el env,
         //dificulta que otros podamos ejectuarlo (sobreescribe nuestro env)
         //no lo borré por si acaso pero de preferencia no lo vuelvas a poner
-        /*
+        
         'mongodb' => [
             'driver' => 'mongodb',
-            'host'     => env('DB_HOST_MONGO', '100.26.97.170'),
-            'port'     => env('DB_PORT_MONGO', 27017),
-            'database' => env('DB_DATABASE_MONGO', 'Monguillodb'),
-            'username' => env('DB_USERNAME_MONGO', ''),
-            'password' => env('DB_PASSWORD_MONGO', ''),
+            'host'     => env('DB_HOST_MONGO'),
+            'port'     => env('DB_PORT_MONGO'),
+            'database' => env('DB_DATABASE_MONGO'),
+            'username' => env('DB_USERNAME_MONGO'),
+            'password' => env('DB_PASSWORD_MONGO'),
             'dsn' => env('DB_URI'),
             'options' => [
-                'tlsAllowInvalidCertificates' => true, // Be cautious with this in production
+                'ssl' => false,
+               'tlsAllowInvalidCertificates' => true,
             ]
-        ],*/
-        'mongodb' => [
+        ],
+       /* 'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('DB_URI')
-        ],
+        ], */
     ],
 
     /*

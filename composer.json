@@ -17,6 +17,7 @@
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
         "mongodb/mongodb": "^1.21",
+        "pusher/pusher-php-server": "^7.2",
         "spatie/laravel-permission": "^6.10"
     },
     "require-dev": {

@@ -29,7 +29,7 @@ class UsuarioFactory extends Factory
             'usuario_nom'        => $this->faker->userName,
             'email'              => $this->faker->unique()->safeEmail,
             'email_verified_at'  => now(),
-            'foto_perfil'        => $this->faker->imageUrl(200, 200, 'people'),
+            'foto_perfil'        => "https://ui-avatars.com/api/?name=" . urlencode($user->usuario_nom) . "&color=7F9CF5&background=EBF4FF",
             'rol'                => 'Guest',
             'password'           => Hash::make('password'),
             'is_active'          => $this->faker->boolean,

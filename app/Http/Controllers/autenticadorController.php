@@ -60,8 +60,6 @@ class autenticadorController extends Controller
             'message' => 'Usuario registrado exitosamente'
         ], 200);
     }
-    
-    
 
     public function login(Request $request)
     {
@@ -77,10 +75,23 @@ class autenticadorController extends Controller
         }
 
         $user = Usuario::where('email', $request->email)->first();
-        // vereficar si el usuario existe o el password es correcto
-        if (!$user || !Hash::check($request->password, $user->password)) {
+
+        // vereficar si el usuario existe
+        if (!$user) {
             return response()->json([
-                'message' => 'Invalid email or password'
+                'message' => 'User not found'
+            ], 404);
+        }
+        // vereficar si el usuario esta activo
+        if (!$user->is_Inactive) {
+            return response()->json([
+                'message' => 'Usuario esta desactivado'
+            ], 401);
+        }
+        // vereficar si el password es correcto
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'message' => 'Credenciales incorrectas'
             ], 401);
         }
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use MongoDB\Client as MongoClient;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Tinaco;
+use App\Events\Sensores;
 
 class SensorController extends Controller
 {
@@ -38,7 +39,7 @@ class SensorController extends Controller
         $timestamp = $request->input('timestamp')??date('Y-m-d H:i:s');
 
         // Obtener la URI de MongoDB desde el archivo .env
-        $db_uri = env('DB_URI');
+        $db_uri = env('DB_URI')?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
 
         // Conectar a MongoDB usando la URI
         $client = new MongoClient($db_uri);
@@ -52,10 +53,10 @@ class SensorController extends Controller
         $data = $request->all();
         $data['created_at'] =  $timestamp ; // Asignar el valor de timestamp a created_at
         unset( $timestamp ); // Eliminar el campo timestamp del arreglo
-
         // Insertar los datos en MongoDB
         $collection->insertOne($data);
+        broadcast(new Sensores($data));
 
-        return response()->json(['status' => 'success'], 200);
+        return response()->json(['status' => 'success', 'message' => 'Datos insertados correctamente', 'data' => $data,'db_uri' => $db_uri,'database_name' => $database_name,'collection_name' => $collection_name,'collection' => $collection], 200);
     }
 }

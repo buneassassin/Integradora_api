@@ -10,6 +10,8 @@ use App\Models\Tinaco;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+
+
 class ultrasonicoController extends Controller
 {
 

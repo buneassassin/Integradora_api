@@ -84,9 +84,6 @@ class ReporteController extends Controller
             ], 500);
         }
     }
-      // Consulta para obtener datos de los sensores asociados a tinacos
-     
-
     public function obtenerDatosPorFecha()
     {
         try {
@@ -115,7 +112,7 @@ class ReporteController extends Controller
             ], 500);
         }
     }
-    public function obtenerHistorialPorSensor(Request $request)
+    public function obtenerHistorialPorSensord1(Request $request)
     {
         try {
             // Validamos que el nombre del sensor sea enviado en la solicitud
@@ -182,5 +179,78 @@ class ReporteController extends Controller
             ], 500);
         }
     }
+    public function obtenerHistorialPorSensor(Request $request)
+    {
+        try {
+            // Validamos que el nombre del sensor sea enviado en la solicitud
+            $validator = Validator::make($request->all(), [
+                'sensor_id' => 'required',
+                'tinaco_id' => 'required|integer'
+            ]);
     
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()
+                ], 400);
+            }
+            $id_sensor=0;
+            // Obtenemos el nombre del sensor desde el body de la solicitud
+            $nombreSensor = $request->input('sensor_id');
+                        //vereficamos si el nombre es Ultrasonico
+
+            if ($nombreSensor == 'Ultrasonico'|| $nombreSensor == 1) {
+               $id_sensor=1;
+            }
+            if ($nombreSensor == 'Temperatura' || $nombreSensor == 2) {
+                $id_sensor=2;
+             }
+             if ($nombreSensor == 'PH' || $nombreSensor == 'ph' || $nombreSensor == 'Ph' || $nombreSensor == 3) {
+                $id_sensor=3;
+             }
+             if ($nombreSensor == 'Turbidez' || $nombreSensor == 4) {
+                $id_sensor=4;
+             }
+             if ($nombreSensor == 'TDS' || $nombreSensor == 5) {
+                $id_sensor=5;
+             }
+             $tinaco_id = $request->input('tinaco_id');
+             $perPage = $request->input('perPage', 5);
+
+            // Consulta para obtener el historial del sensor filtrado por nombre
+            $datos = DB::connection('mongodb')
+                ->collection('Valor')
+                ->get();
+            
+    
+            // Verificamos si se encontraron datos
+            if ($datos->isEmpty()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No se encontraron datos para el sensor especificado.'
+                ], 404);
+            }
+  
+            $datos = $datos->where('sensor_id', $id_sensor);
+            $datos = $datos->where('tinaco_id', $tinaco_id);
+
+
+            
+            //le agregamos paginacion a la consulta
+            $datos = $datos->paginate(10);
+            
+            // Retornamos los datos completos del historial del sensor
+            return response()->json([
+                'status' => 'success',
+                'data' => $datos,
+            ], 200);
+    
+        } catch (\Exception $e) {
+            // En caso de error, devolvemos el mensaje del error
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

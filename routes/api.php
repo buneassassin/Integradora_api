@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->get('v1/user', function (Request $request) {
 // Link para el registro
 Route::post('v1/register', [autenticadorController::class, 'register']);
 Route::get('v1/activate/{user}', [autenticadorController::class, 'activate'])->name('activate'); //->middleware('signed');
-Route::post('v1/login', [autenticadorController::class, 'login']); //->middleware('inactive.block');
+Route::post('v1/login', [autenticadorController::class, 'login'])->middleware('inactive.block');
 Route::post('v1/update', [autenticadorController::class, 'update'])->middleware('auth:sanctum');
 Route::post('v1/updatePassword', [autenticadorController::class, 'updatePassword'])->middleware('auth:sanctum');
 Route::post('v1/logout', [autenticadorController::class, 'logout'])->middleware('auth:sanctum');
@@ -60,10 +60,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Link para el reporte
     Route::get('v1/reporte-datos', [ReporteController::class, 'obtenerDatos']);
     Route::get('v1/reporte-datos-fecha', [ReporteController::class, 'obtenerDatosPorFecha']);
+    Route::post('v1/reporte-datos-sensor1', [ReporteController::class, 'obtenerHistorialPorSensor1']);
     Route::post('v1/reporte-datos-sensor', [ReporteController::class, 'obtenerHistorialPorSensor']);
-
-
-
 });
 
 Route::middleware(['auth:sanctum', 'admin.only'])->group(function () {

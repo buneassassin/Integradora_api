@@ -95,7 +95,7 @@ return [
         //dificulta que otros podamos ejectuarlo (sobreescribe nuestro env)
         //no lo borré por si acaso pero de preferencia no lo vuelvas a poner
         
-        'mongodb' => [
+        /*'mongodb' => [
             'driver' => 'mongodb',
             'host'     => env('DB_HOST_MONGO'),
             'port'     => env('DB_PORT_MONGO'),
@@ -107,12 +107,12 @@ return [
                 'ssl' => false,
                'tlsAllowInvalidCertificates' => true,
             ]
-        ],
-       /* 'mongodb' => [
+        ],*/
+       'mongodb' => [
             'driver'   => 'mongodb',
             'dsn'      => env('DB_URI'),
-            'database' => env('DB_NAME', 'Monguillodb'),
-        ], */
+            'database' => env('DB_NAME', 'Monguillodb'),   
+        ],
     ],
 
     /*

@@ -244,21 +244,11 @@ class autenticadorController extends Controller
     }
     public function resetPassword(Request $request, $userId)
     {
-        $validator = Validator::make($request->all(), [
-            'password' => 'required|min:8|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator);
-        }
-
         $user = Usuario::findOrFail($userId);
-        $user->password = Hash::make($request->password);
+        $user->password = bcrypt($request->password);
         $user->save();
-
-        return response()->json([
-            'message' => 'Contraseña cambiada correctamente!'
-        ])->setStatusCode(200);
+    
+        return redirect()->back()->with('success', '¡Contraseña cambiada correctamente!');
     }
     public function logout(Request $request)
     {

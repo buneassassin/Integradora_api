@@ -27,8 +27,9 @@ class ResetPassword extends Mailable
     }
     public function build()
     {
-        return $this->view('mail.resetPassword')
+        return $this->from('noreply@tudominio.com', 'Tu Empresa')
                     ->subject('Recuperar Contraseña')
+                    ->view('mail.resetPassword')
                     ->with([
                         'user' => $this->user,
                         'url' => $this->url,
@@ -56,6 +57,10 @@ class ResetPassword extends Mailable
     {
         return new Content(
             view: 'mail.resetPassword',
+            with: [
+                'user' => $this->user,
+                'url' => $this->url
+            ]
         );
     }
 

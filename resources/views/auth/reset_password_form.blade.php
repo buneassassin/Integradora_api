@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,8 @@
         /* Estilos generales */
         body {
             font-family: Arial, sans-serif;
-            background-color: #e3f2fd; /* Fondo azul claro */
+            background-color: #e3f2fd;
+            /* Fondo azul claro */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +19,8 @@
         }
 
         h1 {
-            color: #0d47a1; /* Azul fuerte */
+            color: #0d47a1;
+            /* Azul fuerte */
         }
 
         /* Estilo del contenedor del formulario */
@@ -42,26 +45,30 @@
             text-align: left;
             margin-bottom: 0.5rem;
             font-weight: bold;
-            color: #1565c0; /* Azul intermedio */
+            color: #1565c0;
+            /* Azul intermedio */
         }
 
         input[type="password"] {
             padding: 0.8rem;
             margin-bottom: 1rem;
-            border: 1px solid #90caf9; /* Borde azul claro */
+            border: 1px solid #90caf9;
+            /* Borde azul claro */
             border-radius: 5px;
             font-size: 1rem;
         }
 
         input[type="password"]:focus {
             outline: none;
-            border-color: #1e88e5; /* Azul más intenso */
+            border-color: #1e88e5;
+            /* Azul más intenso */
             box-shadow: 0 0 4px rgba(30, 136, 229, 0.5);
         }
 
         button {
             padding: 0.8rem;
-            background-color: #1e88e5; /* Azul medio */
+            background-color: #1e88e5;
+            /* Azul medio */
             color: white;
             border: none;
             border-radius: 5px;
@@ -72,12 +79,14 @@
         }
 
         button:hover {
-            background-color: #1565c0; /* Azul más oscuro */
+            background-color: #1565c0;
+            /* Azul más oscuro */
         }
 
         /* Mensaje de error */
         .error {
-            color: #d32f2f; /* Rojo para destacar errores */
+            color: #d32f2f;
+            /* Rojo para destacar errores */
             font-size: 0.9rem;
             margin-bottom: 1rem;
             display: none;
@@ -90,20 +99,24 @@
         }
     </style>
 </head>
+
 <body>
     <div class="form-container">
         <h1>Restablecer Contraseña</h1>
-        <form action="{{ url('api/reset-password/' . $user->id) }}" method="POST" onsubmit="return validateForm()">
+        <form action="{{ url('api/reset-passwords/' . $user->id) }}" method="POST" onsubmit="return validateForm()">
             @csrf
-            <div>
-                <label for="password">Nueva Contraseña:</label>
-                <input type="password" name="password" id="password" required>
-            </div>
-            <div>
-                <label for="password_confirmation">Confirmar Nueva Contraseña:</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" required>
-            </div>
+            <label for="password">Nueva Contraseña:</label>
+            <input type="password" name="password" id="password" required>
+
+            <label for="password_confirmation">Confirmar Nueva Contraseña:</label>
+            <input type="password" name="password_confirmation" id="password_confirmation" required>
             <div class="error" id="error-message">Las contraseñas no coinciden.</div>
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
+
             <button type="submit">Restablecer Contraseña</button>
         </form>
     </div>
@@ -124,4 +137,5 @@
         }
     </script>
 </body>
+
 </html>

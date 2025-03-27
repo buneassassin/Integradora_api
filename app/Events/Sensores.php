@@ -30,7 +30,7 @@ class Sensores implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        $eventName = 'SensorUltrasonicoData' . $this->sensor->tinaco_id;
+        $eventName = 'Sensor_'. $this->sensor->sensor_id .'_Data_' . $this->sensor->tinaco_id;
         Log::info('Broadcast event name: ' . $eventName);
         return $eventName;
     }

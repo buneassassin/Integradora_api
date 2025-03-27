@@ -52,11 +52,12 @@ class SensorController extends Controller
         // Transformar el campo "timestamp" en "created_at"
         $data = $request->all();
         $data['created_at'] =  $timestamp ; // Asignar el valor de timestamp a created_at
+
         unset( $timestamp ); // Eliminar el campo timestamp del arreglo
         // Insertar los datos en MongoDB
         $collection->insertOne($data);
         broadcast(new Sensores($data));
-
+        
         return response()->json(['status' => 'success', 'message' => 'Datos insertados correctamente', 'data' => $data,'db_uri' => $db_uri,'database_name' => $database_name,'collection_name' => $collection_name,'collection' => $collection], 200);
     }
 }

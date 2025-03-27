@@ -233,12 +233,7 @@ class ReporteController extends Controller
   
             $datos = $datos->where('sensor_id', $id_sensor);
             $datos = $datos->where('tinaco_id', $tinaco_id);
-
-
-            
-            //le agregamos paginacion a la consulta
-            $datos = $datos->paginate(10);
-            
+     
             // Retornamos los datos completos del historial del sensor
             return response()->json([
                 'status' => 'success',

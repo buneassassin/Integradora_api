@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Jenssegers\Mongodb\Eloquent\Model;
 
+
 class ReporteController extends Controller
 {
     public function obtenerDatos()
@@ -194,34 +195,32 @@ class ReporteController extends Controller
                     'message' => $validator->errors()
                 ], 400);
             }
-            $id_sensor=0;
+            $id_sensor = 0;
             // Obtenemos el nombre del sensor desde el body de la solicitud
             $nombreSensor = $request->input('sensor_id');
-                        //vereficamos si el nombre es Ultrasonico
-
-            if ($nombreSensor == 'Ultrasonico'|| $nombreSensor == 1) {
-               $id_sensor=1;
+            // Verificamos si el nombre es Ultrasonico
+            if ($nombreSensor == 'Ultrasonico' || $nombreSensor == 1) {
+                $id_sensor = 1;
             }
             if ($nombreSensor == 'Temperatura' || $nombreSensor == 2) {
-                $id_sensor=2;
-             }
-             if ($nombreSensor == 'PH' || $nombreSensor == 'ph' || $nombreSensor == 'Ph' || $nombreSensor == 3) {
-                $id_sensor=3;
-             }
-             if ($nombreSensor == 'Turbidez' || $nombreSensor == 4) {
-                $id_sensor=4;
-             }
-             if ($nombreSensor == 'TDS' || $nombreSensor == 5) {
-                $id_sensor=5;
-             }
-             $tinaco_id = $request->input('tinaco_id');
-             $perPage = $request->input('perPage', 5);
-
+                $id_sensor = 2;
+            }
+            if ($nombreSensor == 'PH' || $nombreSensor == 'ph' || $nombreSensor == 'Ph' || $nombreSensor == 3) {
+                $id_sensor = 3;
+            }
+            if ($nombreSensor == 'Turbidez' || $nombreSensor == 4) {
+                $id_sensor = 4;
+            }
+            if ($nombreSensor == 'TDS' || $nombreSensor == 5) {
+                $id_sensor = 5;
+            }
+            $tinaco_id = $request->input('tinaco_id');
+            $perPage = $request->input('perPage', 5);
+    
             // Consulta para obtener el historial del sensor filtrado por nombre
             $datos = DB::connection('mongodb')
                 ->collection('Valor')
                 ->get();
-            
     
             // Verificamos si se encontraron datos
             if ($datos->isEmpty()) {
@@ -230,16 +229,45 @@ class ReporteController extends Controller
                     'message' => 'No se encontraron datos para el sensor especificado.'
                 ], 404);
             }
-  
+    
+            // Filtrar por sensor_id y tinaco_id
             $datos = $datos->where('sensor_id', $id_sensor);
             $datos = $datos->where('tinaco_id', $tinaco_id);
-     
-            // Retornamos los datos completos del historial del sensor
+    
+            // Ordenar los datos de forma descendente por 'created_at' (los más nuevos primero)
+            $datos = $datos->sortByDesc('created_at')->values();
+    
+            // Obtener los valores de paginación desde el request
+            $page = $request->input('page', 1);
+            $perPage = $request->input('perPage', 10);
+            $total = $datos->count();
+    
+            // Aplicar la paginación manualmente
+            $paginatedItems = $datos->forPage($page, $perPage)->values();
+    
+            // Crear el paginador manualmente
+            $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
+                $paginatedItems,
+                $total,
+                $perPage,
+                $page,
+                [
+                    'path' => $request->url(),
+                    'query' => $request->query(),
+                ]
+            );
+    
+            // Retornar la respuesta con el paginador
             return response()->json([
                 'status' => 'success',
-                'data' => $datos,
+                'data' => $paginatedData->items(),
+                'pagination' => [
+                    'current_page' => $paginatedData->currentPage(),
+                    'total' => $paginatedData->total(),
+                    'per_page' => $paginatedData->perPage(),
+                    'last_page' => $paginatedData->lastPage(),
+                ]
             ], 200);
-    
         } catch (\Exception $e) {
             // En caso de error, devolvemos el mensaje del error
             return response()->json([
@@ -248,4 +276,5 @@ class ReporteController extends Controller
             ], 500);
         }
     }
+    
 }

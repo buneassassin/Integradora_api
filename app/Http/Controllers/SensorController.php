@@ -1,6 +1,5 @@
-//perfecto todo
-
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -78,7 +77,7 @@ class SensorController extends Controller
                 ], 400);
             }
 
-            // Paso que creo que falta: Conectar a Mongo de una manera más fuerte
+            //Conectar a Mongo de una manera más fuerte
             $db_uri = env('DB_URI')?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
             $database_name = env('DB_NAME') ?? 'Monguillodb'; // Nombre de la base de datos
             $collection_name = env('DB_COLLECTION') ?? 'Valor'; // Nombre de la colección
@@ -137,10 +136,8 @@ class SensorController extends Controller
             ], 400);
         }
 
-<<<<<<< HEAD
         $data = $this->processPayload($request->all());
 
-        // ----------------------------------------------
         // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
         $sensor_id = $request->input('sensor_id');
         if ($sensor_id == 1) {
@@ -151,8 +148,6 @@ class SensorController extends Controller
             $tinaco->nivel_del_agua = $nivel;
             $tinaco->save();
         }
-        // termina bloque donde haces actualización visual del nivel de agua
-        // ----------------------------------------------
 
         // Insertar en MongoDB
         $db_uri = env('DB_URI') ?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
@@ -192,64 +187,19 @@ class SensorController extends Controller
             $nivel = $data['valor'];
             //dd($nivel);
             $tinaco = Tinaco::find($tinaco_id);
+            //dd($tinaco_id);
             //dd($tinaco);
             $tinaco->nivel_del_agua = $nivel;
             $tinaco->save();
         }
 
         // Broadcast de eventos
-        /*
         try {
             broadcast(new Sensores($data));
         } catch (\Exception $e) {
             Log::error('Error broadcasting event', ['error' => $e->getMessage()]);
         }
-        */
-
+        
         return $data;
-=======
-        // Convertir todos los valores recibidos a string
-        $sensor_id = (string) $request->input('sensor_id');
-        $tinaco_id = (string) $request->input('tinaco_id');
-        $nivel = (string) $request->input('valor');
-        $timestamp = (string) ($request->input('timestamp') ?? date('Y-m-d H:i:s'));
-
-        // Si el sensor_id es 1, actualizar el nivel del tinaco
-        if ($sensor_id === '1') {
-            $tinaco = Tinaco::find($tinaco_id);
-            if ($tinaco) {
-                $tinaco->nivel_del_agua = $nivel;
-                $tinaco->save();
-            }
-        }
-
-        // Obtener la URI de MongoDB desde el archivo .env
-        $db_uri = env('DB_URI') ?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
-
-        // Conectar a MongoDB usando la URI
-        $client = new MongoClient($db_uri);
-
-        // Seleccionar la base de datos y la colección
-        $database_name = env('DB_NAME') ?? 'Monguillodb';
-        $collection_name = env('DB_COLLECTION') ?? 'Valor';
-        $collection = $client->$database_name->$collection_name;
-
-        // Obtener todos los datos y convertirlos a string
-        $data = array_map('strval', $request->all());
-        $data['created_at'] = $timestamp; // Asignar el valor de timestamp a created_at
-
-        // Insertar los datos en MongoDB
-        $collection->insertOne($data);
-        broadcast(new Sensores($data));
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Datos insertados correctamente',
-            'data' => $data,
-            'db_uri' => $db_uri,
-            'database_name' => $database_name,
-            'collection_name' => $collection_name
-        ], 200);
->>>>>>> b92105eebab5c737b8328a089201a8851aa9aeea
     }
 }

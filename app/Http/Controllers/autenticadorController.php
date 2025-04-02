@@ -129,12 +129,11 @@ class autenticadorController extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'usuario_nom' => 'sometimes|string',
-            'email' => 'sometimes|email|unique:usuario,email,' . $request->user()->id,
-            'nombres' => 'sometimes|string',
-            'apellidoPaterno' => 'sometimes|string',
-            'apellidoMaterno' => 'sometimes|string',
-            'telefono' => 'sometimes|string'
+            'usuario_nom' => 'sometimes|string|max:50',
+            'nombres' => 'sometimes|string|max:50',
+            'apellidoPaterno' => 'sometimes|string|max:50',
+            'apellidoMaterno' => 'sometimes|string|max:50',
+            'telefono' => 'sometimes|string|max:10|min:10',
         ]);
 
         if ($validator->fails()) {

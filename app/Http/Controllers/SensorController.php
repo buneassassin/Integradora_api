@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -136,33 +135,40 @@ class SensorController extends Controller
             ], 400);
         }
 
-        $data = $this->processPayload($request->all());
+        // Convertir todos los valores recibidos a string
+        $sensor_id = (string) $request->input('sensor_id');
+        $tinaco_id = (string) $request->input('tinaco_id');
+        $nivel = (string) $request->input('valor');
+        $timestamp = (string) ($request->input('timestamp') ?? date('Y-m-d H:i:s'));
 
-        // ----------------------------------------------
-        // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        $sensor_id = $request->input('sensor_id');
-        if ($sensor_id == 1) {
-            $tinaco_id = $request->input('tinaco_id');
-            $nivel = $request->input('valor');
+        // Si el sensor_id es 1, actualizar el nivel del tinaco
+        if ($sensor_id === '1') {
             $tinaco = Tinaco::find($tinaco_id);
-            //dd($tinaco);
-            $tinaco->nivel_del_agua = $nivel;
-            $tinaco->save();
+            if ($tinaco) {
+                $tinaco->nivel_del_agua = $nivel;
+                $tinaco->save();
+            }
         }
-        // termina bloque donde haces actualización visual del nivel de agua
-        // ----------------------------------------------
 
-        // Insertar en MongoDB
+        // Obtener la URI de MongoDB desde el archivo .env
         $db_uri = env('DB_URI') ?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
+
+        // Conectar a MongoDB usando la URI
         $client = new MongoClient($db_uri);
+
+        // Seleccionar la base de datos y la colección
         $database_name = env('DB_NAME') ?? 'Monguillodb';
         $collection_name = env('DB_COLLECTION') ?? 'Valor';
         $collection = $client->$database_name->$collection_name;
 
-        $collection->insertOne($data);
+        // Obtener todos los datos y convertirlos a string
+        $data = array_map('strval', $request->all());
+        $data['created_at'] = $timestamp; // Asignar el valor de timestamp a created_at
 
-        //broadcast(new Sensores($data));
-        
+        // Insertar los datos en MongoDB
+        $collection->insertOne($data);
+        broadcast(new Sensores($data));
+
         return response()->json([
             'status' => 'success',
             'message' => 'Datos insertados correctamente',
@@ -171,39 +177,5 @@ class SensorController extends Controller
             'database_name' => $database_name,
             'collection_name' => $collection_name
         ], 200);
-    }
-
-    protected function processPayload(array $payload)
-    {        
-        // 4- Preparar datos para MongoDB
-        $data = [
-            'sensor_id' => $payload['sensor_id'],
-            'tinaco_id' => $payload['tinaco_id'],
-            'valor' => $payload['valor'],
-            'created_at' => $payload['timestamp'] ?? date('Y-m-d H:i:s')
-        ];
-
-        // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        if ($data['sensor_id'] == 1) {
-            $tinaco_id = $data['tinaco_id'];
-            //dd($tinaco_id);
-            $nivel = $data['valor'];
-            //dd($nivel);
-            $tinaco = Tinaco::find($tinaco_id);
-            //dd($tinaco);
-            $tinaco->nivel_del_agua = $nivel;
-            $tinaco->save();
-        }
-
-        // Broadcast de eventos
-        /*
-        try {
-            broadcast(new Sensores($data));
-        } catch (\Exception $e) {
-            \Log::error('Error broadcasting event', ['error' => $e->getMessage()]);
-        }
-        */
-
-        return $data;
     }
 }

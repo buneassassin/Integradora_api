@@ -59,6 +59,15 @@ class TinacoController extends Controller
 
         return response()->json($tinacos, 200);
     }
+    public function listartinacos2()
+    {
+        $id_usuario = auth()->user()->id;
+        //USAMOS PAGINACIÓN
+        $tinacos = Tinaco::where('id_usuario', $id_usuario)->paginate(5);
+        
+
+        return response()->json($tinacos, 200);
+    }
 
     public function eliminartinaco($id)
     {

@@ -14,7 +14,7 @@ class SensorController extends Controller
 {
     public function store(Request $request)
     {
-        \Log::info('DB Config', [
+        Log::info('DB Config', [
             'uri' => env('DB_URI'),
             'db' => env('DB_NAME'),
             'collection' => env('DB_COLLECTION')
@@ -32,7 +32,7 @@ class SensorController extends Controller
 
     protected function processBatch(Request $request)
     {
-        \Log::info('Iniciando procesamiento de batch', ['payload_count' => count($request->batch)]);
+        Log::info('Iniciando procesamiento de batch', ['payload_count' => count($request->batch)]);
     
         try {
             $payloads = $request->batch;
@@ -50,7 +50,7 @@ class SensorController extends Controller
 
                     if ($validator->fails()) {
                         $errors[$index] = $validator->errors()->all();
-                        \Log::warning('Validación fallida', ['index' => $index, 'errors' => $validator->errors()]);
+                        Log::warning('Validación fallida', ['index' => $index, 'errors' => $validator->errors()]);
                         continue;
                     }
                     
@@ -59,16 +59,16 @@ class SensorController extends Controller
                     $results[] = $result;
                     
                 } catch (\Exception $e) {
-                    \Log::error('Error procesando payload', ['index' => $index, 'error' => $e->getMessage()]);
+                    Log::error('Error procesando payload', ['index' => $index, 'error' => $e->getMessage()]);
                     $errors[$index] = $e->getMessage();
                 }
             }
     
-            \Log::info('Resultados procesados', ['success' => count($results), 'errors' => count($errors)]);
+            Log::info('Resultados procesados', ['success' => count($results), 'errors' => count($errors)]);
             //dd($results); // Conjunto de datos a insertar
 
             if (empty($results)) {
-                \Log::error('No hay resultados válidos para insertar');
+                Log::error('No hay resultados válidos para insertar');
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No se pudo procesar ningún payload',
@@ -89,7 +89,7 @@ class SensorController extends Controller
                 $collection = $client->$database_name->$collection_name;
                 
                 $insertResult = $collection->insertMany($results);
-                \Log::info('Insertados en MongoDB', ['inserted_count' => $insertResult->getInsertedCount()]);
+                Log::info('Insertados en MongoDB', ['inserted_count' => $insertResult->getInsertedCount()]);
         
                 return response()->json([
                     'status' => !empty($errors) ? 'partial_success' : 'success',
@@ -101,7 +101,7 @@ class SensorController extends Controller
                 ], !empty($errors) ? 207 : 200);
     
             } catch (\Exception $e) {
-                \Log::error('Error de MongoDB', ['error' => $e->getMessage()]);
+                Log::error('Error de MongoDB', ['error' => $e->getMessage()]);
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Error de base de datos',
@@ -110,7 +110,7 @@ class SensorController extends Controller
             }
     
         } catch (\Exception $e) {
-            \Log::error('Error general en processBatch', ['error' => $e->getMessage()]);
+            Log::error('Error general en processBatch', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error interno del servidor',

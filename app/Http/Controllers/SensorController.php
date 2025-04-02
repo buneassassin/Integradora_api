@@ -174,17 +174,17 @@ class SensorController extends Controller
     {        
         // 4- Preparar datos para MongoDB
         $data = [
-            'sensor_id' => $payload['sensor_id'],
-            'tinaco_id' => $payload['tinaco_id'],
-            'valor' => $payload['valor'],
-            'created_at' => $payload['timestamp'] ?? date('Y-m-d H:i:s')
+            'sensor_id' => (string) $payload['sensor_id'],
+            'tinaco_id' => (string) $payload['tinaco_id'],
+            'valor' => (string) $payload['valor'],
+            'created_at' => (string) $payload['timestamp'] ?? date('Y-m-d H:i:s')
         ];
 
         // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
         if ($data['sensor_id'] == 1) {
             $tinaco_id = $data['tinaco_id'];
             //dd($tinaco_id);
-            $nivel = $data['valor'];
+            $nivel = (string) $data['valor'];
             //dd($nivel);
             $tinaco = Tinaco::find($tinaco_id);
             //dd($tinaco_id);

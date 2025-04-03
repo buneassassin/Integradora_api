@@ -95,22 +95,6 @@ class autenticadorController extends Controller
             ], 401);
         }
 
-        $mensaje = 'El usuario ' . $user->usuario_nom . ' ha iniciado sesion';
-
-        //validamos si exito o no el SLACK_KEY
-        if (env('SLACK_KEY')) {
-            Http::withHeaders([
-                'Authorization' => 'Bearer ' . env('SLACK_KEY'),
-                'Content-Type' => 'application/json',
-            ])
-                ->withoutVerifying() // Deshabilita la verificación SSL
-                ->post('https://slack.com/api/chat.postMessage', [
-                    'channel' => '#informal',
-                    'text' => $mensaje,
-                ]);
-        }
-
-
         $mesaje = '¡Hola ' . $user->usuario_nom . '! Bienvenido a la plataforma';
         $notificacion = new Notification();
         $notificacion->title = 'Bienvenido';

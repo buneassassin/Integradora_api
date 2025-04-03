@@ -88,7 +88,7 @@ class AdminController extends Controller
         });
     
         // Obtener el total general de tinacos
-        $totalTinacos = Usuario::withCount('tinacos')->get()->sum('tinacos_count');
+        $totalTinacos = Usuario::all()->count();
     
         // Reconstruir el paginador con los datos transformados
         $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(

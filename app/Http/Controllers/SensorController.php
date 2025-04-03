@@ -79,7 +79,7 @@ class SensorController extends Controller
 
             //Conectar a Mongo de una manera más fuerte
            # $db_uri = env('DB_URI')?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
-           $db_uri = env('DB_URI')?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majorityU';
+           $db_uri = env('DB_URI')?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority&maxPoolSize=500';
 
             $database_name = env('DB_NAME') ?? 'Monguillodb'; // Nombre de la base de datos
             $collection_name = env('DB_COLLECTION') ?? 'Valor'; // Nombre de la colección
@@ -153,7 +153,7 @@ class SensorController extends Controller
 
         // Insertar en MongoDB
        # $db_uri = env('DB_URI') ?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
-         $db_uri = env('DB_URI') ?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority';
+         $db_uri = env('DB_URI') ?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority&maxPoolSize=500';
 
         $client = new MongoClient($db_uri);
         $database_name = env('DB_NAME') ?? 'Monguillodb';

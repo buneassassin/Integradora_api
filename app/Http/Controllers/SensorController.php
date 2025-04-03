@@ -141,10 +141,10 @@ class SensorController extends Controller
         $data = $this->processPayload($request->all());
 
         // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        $sensor_id = $request->input('sensor_id');
+        $sensor_id = (string) $request->input('sensor_id');
         if ($sensor_id == 1) {
-            $tinaco_id = $request->input('tinaco_id');
-            $nivel = $request->input('valor');
+            $tinaco_id = (string) $request->input('tinaco_id');
+            $nivel = (string) $request->input('valor');
             $tinaco = Tinaco::find($tinaco_id);
             //dd($tinaco);
             $tinaco->nivel_del_agua = $nivel;
@@ -176,27 +176,25 @@ class SensorController extends Controller
 
     protected function processPayload(array $payload)
     {        
-        // 4- Preparar datos para MongoDB
+        // Convertir los datos a string
         $data = [
-            'sensor_id' => $payload['sensor_id'],
-            'tinaco_id' => $payload['tinaco_id'],
-            'valor' => $payload['valor'],
-            'created_at' => $payload['timestamp'] ?? date('Y-m-d H:i:s')
+            'sensor_id'  => (string) $payload['sensor_id'],
+            'tinaco_id'  => (string) $payload['tinaco_id'],
+            'valor'      => (string) $payload['valor'],
+            'created_at' => isset($payload['timestamp']) ? (string)$payload['timestamp'] : date('Y-m-d H:i:s')
         ];
-
-        // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        if ($data['sensor_id'] == 1) {
+    
+        // Si el sensor_id es 1 (ultrasonico), actualizamos el nivel de agua del tinaco
+        if ($data['sensor_id'] === '1') {
             $tinaco_id = $data['tinaco_id'];
-            //dd($tinaco_id);
             $nivel = $data['valor'];
-            //dd($nivel);
             $tinaco = Tinaco::find($tinaco_id);
-            //dd($tinaco_id);
-            //dd($tinaco);
-            $tinaco->nivel_del_agua = $nivel;
-            $tinaco->save();
+            if($tinaco){
+                $tinaco->nivel_del_agua = $nivel;
+                $tinaco->save();
+            }
         }
-
+    
         // Broadcast de eventos
         try {
             broadcast(new Sensores($data));
@@ -206,4 +204,5 @@ class SensorController extends Controller
         
         return $data;
     }
+    
 }

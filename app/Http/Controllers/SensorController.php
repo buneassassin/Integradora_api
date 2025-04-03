@@ -79,7 +79,7 @@ class SensorController extends Controller
 
             //Conectar a Mongo de una manera más fuerte
            # $db_uri = env('DB_URI')?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
-           $db_uri = env('DB_URI')?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majorityU';
+           $db_uri = env('DB_URI')?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority&maxPoolSize=500';
 
             $database_name = env('DB_NAME') ?? 'Monguillodb'; // Nombre de la base de datos
             $collection_name = env('DB_COLLECTION') ?? 'Valor'; // Nombre de la colección
@@ -141,10 +141,10 @@ class SensorController extends Controller
         $data = $this->processPayload($request->all());
 
         // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        $sensor_id = $request->input('sensor_id');
+        $sensor_id = (string) $request->input('sensor_id');
         if ($sensor_id == 1) {
-            $tinaco_id = $request->input('tinaco_id');
-            $nivel = $request->input('valor');
+            $tinaco_id = (string) $request->input('tinaco_id');
+            $nivel = (string) $request->input('valor');
             $tinaco = Tinaco::find($tinaco_id);
             //dd($tinaco);
             $tinaco->nivel_del_agua = $nivel;
@@ -153,7 +153,7 @@ class SensorController extends Controller
 
         // Insertar en MongoDB
        # $db_uri = env('DB_URI') ?? 'mongodb+srv://myAtlasDBUser:absdefg@myatlasclusteredu.hhf3j.mongodb.net/retryWrites=true&w=majority&appName=myAtlasClusterEDU';
-         $db_uri = env('DB_URI') ?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority';
+         $db_uri = env('DB_URI') ?? 'mongodb://adminsillo:12341234@107.23.182.24:27017,18.212.189.87:27017,44.201.205.233:27017/?authSource=Monguillodb&replicaSet=rs0&retryWrites=true&w=majority&maxPoolSize=500';
 
         $client = new MongoClient($db_uri);
         $database_name = env('DB_NAME') ?? 'Monguillodb';
@@ -176,27 +176,25 @@ class SensorController extends Controller
 
     protected function processPayload(array $payload)
     {        
-        // 4- Preparar datos para MongoDB
+        // Convertir los datos a string
         $data = [
-            'sensor_id' => (string) $payload['sensor_id'],
-            'tinaco_id' => (string) $payload['tinaco_id'],
-            'valor' => (string) $payload['valor'],
-            'created_at' => (string) $payload['timestamp'] ?? date('Y-m-d H:i:s')
+            'sensor_id'  => (string) $payload['sensor_id'],
+            'tinaco_id'  => (string) $payload['tinaco_id'],
+            'valor'      => (string) $payload['valor'],
+            'created_at' => isset($payload['timestamp']) ? (string)$payload['timestamp'] : date('Y-m-d H:i:s')
         ];
-
-        // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
-        if ($data['sensor_id'] == 1) {
+    
+        // Si el sensor_id es 1 (ultrasonico), actualizamos el nivel de agua del tinaco
+        if ($data['sensor_id'] === '1') {
             $tinaco_id = $data['tinaco_id'];
-            //dd($tinaco_id);
-            $nivel = (string) $data['valor'];
-            //dd($nivel);
+            $nivel = $data['valor'];
             $tinaco = Tinaco::find($tinaco_id);
-            //dd($tinaco_id);
-            //dd($tinaco);
-            $tinaco->nivel_del_agua = $nivel;
-            $tinaco->save();
+            if($tinaco){
+                $tinaco->nivel_del_agua = $nivel;
+                $tinaco->save();
+            }
         }
-
+    
         // Broadcast de eventos
         try {
             broadcast(new Sensores($data));
@@ -206,4 +204,5 @@ class SensorController extends Controller
         
         return $data;
     }
+    
 }

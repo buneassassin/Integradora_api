@@ -191,7 +191,9 @@ class AdminController extends Controller
         if ($user->rol == 'Admin') {
             return response()->json(['message' => 'El usuario es administrador.'], 400);
         }
-
+        if ($user->rol == $request->rol) {
+            return response()->json(['message' => 'El usuario ya tiene ese rol.'], 400);    
+        }
         $user->rol = $request->rol;
         $user->save();
 

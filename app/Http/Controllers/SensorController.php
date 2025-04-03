@@ -143,12 +143,21 @@ class SensorController extends Controller
         // si el sensor_id es 1 es ultrasonico actualizamos la base de datos de el nivel de agua del tinaco
         $sensor_id = (string) $request->input('sensor_id');
         if ($sensor_id == 1) {
-            $tinaco_id = (string) $request->input('tinaco_id');
-            $nivel = (string) $request->input('valor');
-            $tinaco = Tinaco::find($tinaco_id);
-            //dd($tinaco);
-            $tinaco->nivel_del_agua = $nivel;
-            $tinaco->save();
+           $tinaco = Tinaco::find($data['tinaco_id']);
+            if ($tinaco) {
+                $tinacoHeight = 17; // Altura total del tinaco en cm
+                $sensorValue = floatval($data['valor']); // Lectura del sensor (en cm)
+                
+                // Calcular la altura del agua y el porcentaje
+                $waterHeight = $tinacoHeight - $sensorValue;
+                // Asegurarse de que el valor esté entre 0 y la altura total
+                $waterHeight = max(0, min($waterHeight, $tinacoHeight));
+                $percentage = ($waterHeight / $tinacoHeight) * 100;
+                
+                // Guardar el porcentaje como entero (por ejemplo, 30 en lugar de "30.00%")
+                $tinaco->nivel_del_agua = round($percentage);
+                $tinaco->save();
+            }
         }
 
         // Insertar en MongoDB
@@ -176,7 +185,7 @@ class SensorController extends Controller
 
     protected function processPayload(array $payload)
     {        
-        // Convertir los datos a string
+        // Convertir los datos a string (si lo requieres)
         $data = [
             'sensor_id'  => (string) $payload['sensor_id'],
             'tinaco_id'  => (string) $payload['tinaco_id'],
@@ -184,18 +193,26 @@ class SensorController extends Controller
             'created_at' => isset($payload['timestamp']) ? (string)$payload['timestamp'] : date('Y-m-d H:i:s')
         ];
     
-        // Si el sensor_id es 1 (ultrasonico), actualizamos el nivel de agua del tinaco
+        // Si el sensor_id es 1 (ultrasonico), calcular el nivel de agua y actualizar el tinaco
         if ($data['sensor_id'] === '1') {
-            $tinaco_id = $data['tinaco_id'];
-            $nivel = $data['valor'];
-            $tinaco = Tinaco::find($tinaco_id);
-            if($tinaco){
-                $tinaco->nivel_del_agua = $nivel;
+            $tinaco = Tinaco::find($data['tinaco_id']);
+            if ($tinaco) {
+                $tinacoHeight = 17; // Altura total del tinaco en cm
+                $sensorValue = floatval($data['valor']); // Lectura del sensor (en cm)
+                
+                // Calcular la altura del agua y el porcentaje
+                $waterHeight = $tinacoHeight - $sensorValue;
+                // Asegurarse de que el valor esté entre 0 y la altura total
+                $waterHeight = max(0, min($waterHeight, $tinacoHeight));
+                $percentage = ($waterHeight / $tinacoHeight) * 100;
+                
+                // Guardar el porcentaje como entero (por ejemplo, 30 en lugar de "30.00%")
+                $tinaco->nivel_del_agua = round($percentage);
                 $tinaco->save();
             }
         }
     
-        // Broadcast de eventos
+        // Broadcast de eventos (si aplica)
         try {
             broadcast(new Sensores($data));
         } catch (\Exception $e) {
@@ -204,5 +221,6 @@ class SensorController extends Controller
         
         return $data;
     }
+    
     
 }

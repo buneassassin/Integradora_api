@@ -66,11 +66,11 @@ class AdminController extends Controller
     }
     public function obtenerUsuariosConTinacos2(Request $request)
     {
-        $perPage = $request->input('per_page', 5); // Número de elementos por página, por defecto 10
-
+        $perPage = $request->input('per_page', 5); // Número de elementos por página, por defecto 5
+    
         // Obtener los usuarios paginados con relaciones
         $usuarios = Usuario::with(['persona', 'tinacos'])->paginate($perPage);
-
+    
         // Transformar los ítems de la paginación
         $usuariosTransformados = collect($usuarios->items())->map(function ($usuario) {
             return [
@@ -86,7 +86,10 @@ class AdminController extends Controller
                 'foto_perfil' => $usuario->foto_perfil,
             ];
         });
-
+    
+        // Obtener el total general de tinacos
+        $totalTinacos = Usuario::withCount('tinacos')->get()->sum('tinacos_count');
+    
         // Reconstruir el paginador con los datos transformados
         $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
             $usuariosTransformados,
@@ -94,13 +97,19 @@ class AdminController extends Controller
             $usuarios->perPage(),
             $usuarios->currentPage(),
             [
-                'path' => $request->url(),
+                'path'  => $request->url(),
                 'query' => $request->query(),
             ]
         );
-
-        return response()->json($paginatedData, 200);
+    
+        // Convertir el paginador a array y agregar el total de tinacos
+        $data = $paginatedData->toArray();
+        $data['total_tinacos'] = $totalTinacos;
+    
+        return response()->json($data, 200);
     }
+    
+    
 
 
     public function desactivarUsuario(Request $request)
